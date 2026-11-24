@@ -1,0 +1,14 @@
+.DS_Store
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.pytest_cache/
+.venv/
+venv/
+
+# Scene photographs: adapted from Places365, copyright with the image owners.
+# Available from the OSF project (DOI 10.17605/OSF.IO/5AYX8). The face masks stay.
+data/stimuli/*_face.png
+
+# progress log, not an output
+derivatives/contrast_test.rtf

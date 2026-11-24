@@ -1,0 +1,38 @@
+{
+  "participant_id": {
+    "Description": "Pseudonymised participant identifier."
+  },
+  "task": {
+    "Description": "Which experiment the participant completed. The two experiments had entirely separate participant groups.",
+    "Levels": {
+      "facedetection": "Whole scene visible; search until the face is fixated.",
+      "movingwindow": "Gaze-contingent aperture; only the region around fixation is visible."
+    }
+  },
+  "age": {
+    "Description": "Age in years at testing.",
+    "Units": "years"
+  },
+  "sex": {
+    "Description": "Self-reported sex.",
+    "Levels": {
+      "f": "female",
+      "m": "male"
+    }
+  },
+  "handedness": {
+    "Description": "Self-reported handedness.",
+    "Levels": {
+      "r": "right",
+      "l": "left"
+    }
+  },
+  "corrected_vision": {
+    "Description": "Whether the participant wore corrective lenses.",
+    "Levels": {
+      "no": "no correction",
+      "y": "corrected",
+      "c": "contact lenses"
+    }
+  }
+}

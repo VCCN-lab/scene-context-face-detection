@@ -1,0 +1,24 @@
+{
+  "Name": "Scene previews and face detection: two gaze-contingent eye-tracking experiments",
+  "BIDSVersion": "1.9.0",
+  "DatasetType": "raw",
+  "License": "CC-BY-4.0",
+  "Authors": [
+    "Sule Tasliyurt-Celebi",
+    "Benjamin de Haas",
+    "Melissa L.-H. Võ",
+    "Katharina Dobs"
+  ],
+  "Acknowledgements": "",
+  "HowToAcknowledge": "Please cite the accompanying paper.",
+  "ReferencesAndLinks": [],
+  "EthicsApprovals": [
+    "Local ethics committee of Justus Liebig University Giessen"
+  ],
+  "GeneratedBy": [
+    {
+      "Name": "export_bids.py",
+      "Description": "Reduces the raw EyeLink/Psychtoolbox session files to fixation-level event tables. Included in code/ for transparency."
+    }
+  ]
+}
