@@ -31,3 +31,5 @@ package = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["zenodo: downloads the published Zenodo record (needs network access)"]
+addopts = "-m 'not zenodo'"

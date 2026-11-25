@@ -1,6 +1,8 @@
-"""Tests on the metadata of the derivative datasets.
+"""Tests on the metadata of the released dataset and its derivatives.
 
-Every folder in derivatives/ is a BIDS derivative dataset with its own
+The dataset root (cfg.DATA) has a README and a .bidsignore whose patterns all
+match released files. Every folder in its derivatives/ is a BIDS derivative
+dataset with its own
 dataset_description.json. Every data file in it has a JSON sidecar with the
 same name. Tables are BIDS TSV files: tab-separated, with "n/a" for missing
 values. A table's sidecar documents each column, in order, BIDS style. An
@@ -9,6 +11,7 @@ documenting each array with its "Shape"; a .npy file holds one array, named
 after the file.
 """
 
+import fnmatch
 import json
 
 import numpy as np
@@ -18,7 +21,7 @@ import scipy.io as sio
 
 from facescenes import config as cfg
 
-DERIVATIVES = cfg.ROOT / "derivatives"
+DERIVATIVES = cfg.DERIVATIVES
 PIPELINES = ["encoding", "source_data", "stimulus_features", "tables"]
 ARRAY_SUFFIXES = {".npz", ".npy", ".mat"}
 DATA_SUFFIXES = ARRAY_SUFFIXES | {".tsv"}
@@ -41,6 +44,13 @@ def read_table(path):
     return pd.read_csv(path, sep="\t")
 
 
+def ignored(path, pattern):
+    """gitignore-style match: patterns without a slash match the name."""
+    pattern = pattern.strip("/")
+    target = path.as_posix() if "/" in pattern else path.name
+    return fnmatch.fnmatch(target, pattern)
+
+
 def sidecar(path):
     return read_json(path.with_suffix(".json"))
 
@@ -56,7 +66,25 @@ def array_shapes(path):
 
 @pytest.fixture(scope="module")
 def raw_description():
-    return read_json(cfg.ROOT / "data" / "dataset_description.json")
+    return read_json(cfg.DATA / "dataset_description.json")
+
+
+# ---------------------------------------------------------- dataset root
+def test_readme(raw_description):
+    text = (cfg.DATA / "README.md").read_text(encoding="utf-8")
+    assert raw_description["License"] in text
+    assert "https://github.com/VCCN-lab/scene-context-face-detection" in text
+    assert "derivatives/" in text
+
+
+def test_bidsignore_patterns_match_released_files():
+    lines = (cfg.DATA / ".bidsignore").read_text(encoding="utf-8")
+    patterns = [s.strip() for s in lines.splitlines()
+                if s.strip() and not s.startswith("#")]
+    assert patterns
+    files = [p.relative_to(cfg.DATA) for p in cfg.DATA.rglob("*")]
+    for pattern in patterns:
+        assert any(ignored(f, pattern) for f in files), pattern
 
 
 # ------------------------------------------------------- dataset level
