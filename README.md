@@ -17,8 +17,8 @@ data/            BIDS dataset: fixation-level events, participants, face masks
 derivatives/
   stimulus_features/   the ten image predictors and the CNN activations
   encoding/            cached permutation results (regenerated on demand)
-  tables/              the Supplementary Tables as CSV
-  source_data/         the numbers plotted in every figure panel, one CSV each
+  tables/              the Supplementary Tables as TSV
+  source_data/         the numbers plotted in every figure panel, one TSV each
 code/
   facescenes/    the analysis package
   run_*.py       one script per analysis, each runnable on its own
@@ -54,7 +54,7 @@ Then open the notebooks (`uv run jupyter lab`). `figure3_encoding.ipynb` reads
 the cache written by `run_encoding_analyses.py`, so run that first.
 
 Each notebook writes its panels to `figures/` and the numbers behind each panel
-to `derivatives/source_data/<panel>.csv` in the same call, so a figure and its
+to `derivatives/source_data/<panel>.tsv` in the same call, so a figure and its
 source data cannot disagree. Panels carry no titles, as the journal requires;
 set `SHOW_TITLES = True` in `facescenes/plotting.py` to label them by task.
 

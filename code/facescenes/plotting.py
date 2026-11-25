@@ -115,12 +115,13 @@ def condition_colours():
 
 def save(fig, name, data=None):
     """Write the figure as an RGB PNG on white and as a vector PDF, and its
-    source data as CSV.
+    source data as a BIDS TSV file.
 
     The PNG is flattened to RGB because some submission systems render a
     transparent background as black. `data` is a DataFrame holding the numbers
-    plotted in this panel; it goes to derivatives/source_data/<name>.csv, so the
-    source data are produced by the same code as the figure and cannot drift.
+    plotted in this panel; it goes to derivatives/source_data/<name>.tsv
+    (tab-separated, "n/a" for missing values), so the source data are produced
+    by the same code as the figure and cannot drift.
     """
     from PIL import Image
     cfg.FIGURES.mkdir(parents=True, exist_ok=True)
@@ -130,6 +131,6 @@ def save(fig, name, data=None):
     fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight", facecolor="white")
     if data is not None:
         SOURCE_DATA.mkdir(parents=True, exist_ok=True)
-        data.to_csv(SOURCE_DATA / (path.stem + ".csv"), index=False,
-                    float_format="%.6g")
+        data.to_csv(SOURCE_DATA / (path.stem + ".tsv"), sep="\t", index=False,
+                    float_format="%.6g", na_rep="n/a")
     return path

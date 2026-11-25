@@ -2,23 +2,24 @@
 """
 Full statistics for every test that the text summarises, as tables.
 
-Writes CSV files to derivatives/tables/ and prints them. These are the
+Writes BIDS TSV files (tab-separated, "n/a" for missing values) to
+derivatives/tables/ and prints them. These are the
 Supplementary Tables of the paper:
 
-  feature_correlations.csv   every pairwise Spearman correlation between the ten
+  feature_correlations.tsv   every pairwise Spearman correlation between the ten
                              predictors (Fig. 2e), n = 120 images, with exact p
                              and a 95% CI (Fisher z, Bonett-Wright SE).
-  encoding_single.csv        single-feature predictivity per task, feature and
-  encoding_unique.csv        condition (Fig. 3), and unique predictivity, with
+  encoding_single.tsv        single-feature predictivity per task, feature and
+  encoding_unique.tsv        condition (Fig. 3), and unique predictivity, with
                              the standardised beta, the noise-corrected r2, its
                              95% bootstrap CI, the one-sided permutation p
                              (uncorrected and Bonferroni x 20), and the
                              preview-minus-no-preview difference with its 95%
                              bootstrap CI and two-sided condition-swap p.
-  encoding_contrasts.csv     the planned contrasts (face expectation vs the
+  encoding_contrasts.tsv     the planned contrasts (face expectation vs the
                              other features) with bootstrap CIs and the
                              one-sided p of run_contrast_test.py.
-  masking_anova.csv          the 2 x 2 ANOVAs of Supplementary Note 7 with 90% CIs
+  masking_anova.tsv          the 2 x 2 ANOVAs of Supplementary Note 7 with 90% CIs
                              for partial eta squared.
 
 Confidence intervals for predictivity come from a bootstrap over IMAGES, the
@@ -50,6 +51,13 @@ import run_masked_face_analyses as MASK
 CACHE = cfg.ROOT / "derivatives" / "encoding"
 OUT = cfg.ROOT / "derivatives" / "tables"
 N_BONF = 20       # ten features x two conditions, the family used in the text
+
+
+def write_table(df, name):
+    """Write `df` to OUT/<name>.tsv and return the path."""
+    path = OUT / f"{name}.tsv"
+    df.to_csv(path, sep="\t", index=False, na_rep="n/a")
+    return path
 
 
 def feature_correlations():
@@ -174,7 +182,7 @@ def main():
                   "display.float_format", "{:.3f}".format)
 
     corr = feature_correlations()
-    corr.to_csv(OUT / "feature_correlations.csv", index=False)
+    write_table(corr, "feature_correlations")
     print(corr.to_string(index=False), "\n")
 
     single, unique, contrasts = [], [], []
@@ -186,13 +194,13 @@ def main():
     for name, frames in (("encoding_single", single), ("encoding_unique", unique),
                          ("encoding_contrasts", contrasts)):
         df = pd.concat(frames, ignore_index=True)
-        df.to_csv(OUT / f"{name}.csv", index=False)
+        write_table(df, name)
         print(name); print(df.to_string(index=False), "\n")
 
     rows = []
     for task in cfg.TASKS:
         rows += MASK.run(task)
-    pd.DataFrame(rows).to_csv(OUT / "masking_anova.csv", index=False)
+    write_table(pd.DataFrame(rows), "masking_anova")
     print(f"tables written to {OUT}")
 
 

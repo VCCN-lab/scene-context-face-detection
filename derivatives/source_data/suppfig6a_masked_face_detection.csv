@@ -1,9 +1,0 @@
-network,condition,face,r2,sd_across_folds
-Untrained,preview,visible,0.331131,0.0842963
-Untrained,preview,masked,0.249979,0.116862
-Untrained,no_preview,visible,0.462008,0.066547
-Untrained,no_preview,masked,0.368251,0.09128
-SceneFaceDet,preview,visible,0.331811,0.0919654
-SceneFaceDet,preview,masked,0.183036,0.20759
-SceneFaceDet,no_preview,visible,0.400342,0.0691941
-SceneFaceDet,no_preview,masked,0.310543,0.0924139
