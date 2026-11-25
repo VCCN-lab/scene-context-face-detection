@@ -41,6 +41,7 @@ from facescenes import encoding as E
 from facescenes import nan
 from facescenes import stats as S
 
+
 def analyse(task, n_perm, force=False):
     name = f"{task}_encoding.npz"
     cached = D.results_path("encoding", name)
