@@ -3,9 +3,9 @@
 The dataset root (cfg.DATA) has a README and a .bidsignore whose patterns all
 match released files. The event tables are behavioural data (beh/), name the
 scenes in a plain `stimulus` column (the photographs are not released), and
-their sidecars document every column and the stimulus presentation. Every
-Levels entry covers the values used. Every folder in its derivatives/ is a
-BIDS derivative dataset with its own .bidsignore and its own
+their sidecars document every column, the task and the stimulus
+presentation. Every Levels entry covers the values used. Every folder in its
+derivatives/ is a BIDS derivative dataset with its own .bidsignore and its own
 dataset_description.json. Every data file in it has a JSON sidecar with the
 same name. Tables are BIDS TSV files: tab-separated, with "n/a" for missing
 values. A table's sidecar documents each column, in order, BIDS style. An
@@ -16,6 +16,7 @@ after the file.
 
 import fnmatch
 import json
+import re
 
 import numpy as np
 import pandas as pd
@@ -35,6 +36,7 @@ TABLES = [p for p in DATA_FILES if p.suffix == ".tsv"]
 ARRAYS = [p for p in DATA_FILES if p.suffix in ARRAY_SUFFIXES]
 EVENTS = sorted(cfg.DATA.glob("sub-*/*/sub-*_events.tsv"))
 OSF_STIMULI = "10.17605/OSF.IO/5AYX8"
+TASK_KEYS = {"StimulusPresentation", "TaskName", "TaskDescription"}
 
 
 def file_id(path):
@@ -75,7 +77,7 @@ def levels_violations(table, meta):
 
 def event_columns(task):
     meta = read_json(cfg.DATA / f"task-{task}_events.json")
-    return [k for k in meta if k != "StimulusPresentation"]
+    return [k for k in meta if k not in TASK_KEYS]
 
 
 def sidecar(path):
@@ -161,6 +163,19 @@ def test_event_levels(task):
         if f"_task-{task}_" in path.name:
             table = pd.read_csv(path, sep="\t", dtype=str)
             assert levels_violations(table, meta) == {}, path.name
+
+
+@pytest.mark.parametrize("task", cfg.TASKS)
+def test_task_name_gives_the_task_label(task):
+    """BIDS: the label is TaskName without its non-alphanumeric characters."""
+    meta = read_json(cfg.DATA / f"task-{task}_events.json")
+    assert re.sub(r"[^A-Za-z0-9]", "", meta["TaskName"]) == task
+
+
+@pytest.mark.parametrize("task", cfg.TASKS)
+def test_task_description_states_the_time_limit(task):
+    meta = read_json(cfg.DATA / f"task-{task}_events.json")
+    assert f"{cfg.STIM_DUR[task]:g} s" in meta["TaskDescription"]
 
 
 @pytest.mark.parametrize("task", cfg.TASKS)
