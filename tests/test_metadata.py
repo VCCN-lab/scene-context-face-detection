@@ -2,7 +2,8 @@
 
 Every folder in derivatives/ is a BIDS derivative dataset with its own
 dataset_description.json. Every data file in it has a JSON sidecar with the
-same name. A table's sidecar documents each column, in order, BIDS style. An
+same name. Tables are BIDS TSV files: tab-separated, with "n/a" for missing
+values. A table's sidecar documents each column, in order, BIDS style. An
 array file's sidecar has a file-level "Description" and an "Arrays" entry
 documenting each array with its "Shape"; a .npy file holds one array, named
 after the file.
@@ -20,11 +21,11 @@ from facescenes import config as cfg
 DERIVATIVES = cfg.ROOT / "derivatives"
 PIPELINES = ["encoding", "source_data", "stimulus_features", "tables"]
 ARRAY_SUFFIXES = {".npz", ".npy", ".mat"}
-DATA_SUFFIXES = ARRAY_SUFFIXES | {".csv"}
+DATA_SUFFIXES = ARRAY_SUFFIXES | {".tsv"}
 DATA_FILES = sorted(p for name in PIPELINES
                     for p in (DERIVATIVES / name).iterdir()
                     if p.suffix in DATA_SUFFIXES)
-TABLES = [p for p in DATA_FILES if p.suffix == ".csv"]
+TABLES = [p for p in DATA_FILES if p.suffix == ".tsv"]
 ARRAYS = [p for p in DATA_FILES if p.suffix in ARRAY_SUFFIXES]
 
 
@@ -34,6 +35,10 @@ def file_id(path):
 
 def read_json(path):
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def read_table(path):
+    return pd.read_csv(path, sep="\t")
 
 
 def sidecar(path):
@@ -99,7 +104,7 @@ def test_every_file_is_documented(pipeline):
 # ----------------------------------------------------------- tables
 @pytest.mark.parametrize("path", TABLES, ids=file_id)
 def test_table_sidecar_columns(path):
-    columns = pd.read_csv(path).columns
+    columns = read_table(path).columns
     meta = sidecar(path)
     assert list(meta) == list(columns)
     assert all(entry["Description"].strip() for entry in meta.values())
@@ -108,7 +113,7 @@ def test_table_sidecar_columns(path):
 @pytest.mark.parametrize("path", TABLES, ids=file_id)
 def test_table_sidecar_levels(path):
     """Repeated text values carry Levels, and Levels cover every value."""
-    table = pd.read_csv(path)
+    table = read_table(path)
     meta = sidecar(path)
     for column in table.columns:
         values = table[column].dropna()
@@ -116,6 +121,17 @@ def test_table_sidecar_levels(path):
             assert set(values.astype(str)) <= set(meta[column]["Levels"])
         elif pd.api.types.is_string_dtype(values):
             assert values.is_unique, column
+
+
+@pytest.mark.parametrize("path", TABLES, ids=file_id)
+def test_table_is_bids_tsv(path):
+    """Every row has one field per column and no field is empty."""
+    lines = path.read_text(encoding="utf-8").splitlines()
+    n_columns = len(lines[0].split("\t"))
+    for line in lines:
+        fields = line.split("\t")
+        assert len(fields) == n_columns
+        assert all(f.strip() for f in fields)
 
 
 # ----------------------------------------------------------- arrays

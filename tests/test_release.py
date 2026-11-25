@@ -139,7 +139,7 @@ def test_cache_has_no_p_for_untested_features(task):
 
 @pytest.mark.parametrize("kind", ["single", "unique"])
 def test_tables_match_cache(kind):
-    tab = pd.read_csv(TABLES / f"encoding_{kind}.csv")
+    tab = pd.read_csv(TABLES / f"encoding_{kind}.tsv", sep="\t")
     for task in cfg.TASKS:
         res = cache(task)
         t = tab[tab["task"] == task].set_index("feature")
@@ -162,7 +162,7 @@ def test_tables_match_cache(kind):
     ("fig3c_unique_face_detection", "facedetection", "unique"),
     ("fig3d_unique_moving_window", "movingwindow", "unique")])
 def test_figure3_source_data_match_cache(panel, task, kind):
-    src = pd.read_csv(SOURCE / f"{panel}.csv")
+    src = pd.read_csv(SOURCE / f"{panel}.tsv", sep="\t")
     res = cache(task)
     ok = ~np.isnan(res[f"{kind}_preview"])
     assert list(src["feature"]) == list(np.array(cfg.FEATURE_LABELS)[ok])
@@ -173,11 +173,11 @@ def test_figure3_source_data_match_cache(panel, task, kind):
 
 def test_source_data_complete():
     figs = {p.stem for p in cfg.FIGURES.glob("*.png")}
-    assert figs == {p.stem for p in SOURCE.glob("*.csv")}
+    assert figs == {p.stem for p in SOURCE.glob("*.tsv")}
     assert figs == {p.stem for p in cfg.FIGURES.glob("*.pdf")}
 
 
 def test_figure1_source_data_has_all_participants():
-    src = pd.read_csv(SOURCE / "fig1b_latency_face_detection.csv")
+    src = pd.read_csv(SOURCE / "fig1b_latency_face_detection.tsv", sep="\t")
     assert len(src) == 38 and src["participant"].is_unique
     assert src["preview_mean_latency_ms"].mean() == pytest.approx(208.77, abs=.01)

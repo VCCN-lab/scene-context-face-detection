@@ -157,15 +157,17 @@ def test_title_is_off_by_default():
     plt.close(fig)
 
 
-def test_save_writes_rgb_png_pdf_and_csv(tmp_path, monkeypatch):
+def test_save_writes_rgb_png_pdf_and_tsv(tmp_path, monkeypatch):
     import matplotlib.pyplot as plt
     from PIL import Image
     monkeypatch.setattr(cfg, "FIGURES", tmp_path / "fig")
     monkeypatch.setattr(P, "SOURCE_DATA", tmp_path / "src")
     fig, ax = plt.subplots()
     ax.plot([0, 1], [0, 1])
-    P.save(fig, "panel.png", pd.DataFrame(dict(x=[1 / 3])))
+    P.save(fig, "panel.png", pd.DataFrame(dict(x=[1 / 3], y=[np.nan])))
     plt.close(fig)
     assert Image.open(tmp_path / "fig" / "panel.png").mode == "RGB"
     assert (tmp_path / "fig" / "panel.pdf").stat().st_size > 0
-    assert (tmp_path / "src" / "panel.csv").read_text().splitlines() == ["x", "0.333333"]
+    lines = (tmp_path / "src" / "panel.tsv").read_text().splitlines()
+    assert lines == ["x\ty", "0.333333\tn/a"]
+    assert not (tmp_path / "src" / "panel.csv").exists()
