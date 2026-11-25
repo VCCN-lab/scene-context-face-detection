@@ -22,7 +22,7 @@ def _events():
     """
     def row(trial, onset, x, y, ttype, stim, timeout=0, phase="search"):
         return dict(trial=trial, onset=onset, duration=.2, phase=phase,
-                    trial_type=ttype, stim_file=f"stimuli/{stim}",
+                    trial_type=ttype, stimulus=stim,
                     gaze_x=x, gaze_y=y, timeout=timeout)
     return pd.DataFrame([
         row(1, -0.30, 0, 0, "preview", "b.jpg", phase="preview"),

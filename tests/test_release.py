@@ -53,7 +53,7 @@ def test_event_invariants(task):
         assert set(ev["trial_type"]) <= set(cfg.CONDITIONS)
         s = ev[ev["phase"] == "search"]
         # every image at most once per participant
-        assert not s.groupby("trial")["stim_file"].first().duplicated().any()
+        assert not s.groupby("trial")["stimulus"].first().duplicated().any()
         for _, g in s[s["timeout"] == 0].groupby("trial"):
             # the last row of a successful trial is the detection fixation,
             # which is what data.trials() takes the latency from
