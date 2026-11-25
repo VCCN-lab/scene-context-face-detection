@@ -1,4 +1,7 @@
 {
+  "TaskName": "moving window",
+  "TaskDescription": "Search for the face in an indoor scene. Only a small gaze-contingent aperture around the current fixation is visible, so the scene is explored serially; the display ends as soon as the face is fixated, or after 20 s. On half the trials the scene was shown briefly as a preview before the search display; on the other half a grey placeholder was shown instead. Which scenes were previewed was counterbalanced between two participant groups.",
+  "Instructions": "Your task will be to search scenes for a face. When you found a face, you need to look at it. Sometimes you will see a short preview of the scene before and sometimes only a gray screen.",
   "onset": {
     "Description": "Onset of the fixation, relative to the onset of the SEARCH DISPLAY on that trial. This departs from the BIDS convention of run-relative onsets: the raw files record only per-trial timings, so a run-relative onset could be produced only by assuming fixed inter-trial intervals. Trial-relative onset is the quantity that was measured and the one every analysis uses. Negative values occur for fixations already in progress when the display appeared.",
     "Units": "s"
@@ -59,6 +62,15 @@
       2160
     ],
     "ScreenRefreshRate": 60,
-    "SoftwareName": "Psychtoolbox"
-  }
+    "SoftwareName": "Psychtoolbox",
+    "SoftwareVersion": "3.0.16 (MATLAB R2021b)",
+    "OperatingSystem": "Windows (64-bit)",
+    "ScreenOrigin": [
+      "top",
+      "left"
+    ]
+  },
+  "HeadStabilization": "chin-rest and head-rest",
+  "InstitutionName": "Justus Liebig University Giessen",
+  "InstitutionalDepartmentName": "Department of Psychology"
 }
