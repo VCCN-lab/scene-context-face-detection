@@ -22,7 +22,7 @@
     }
   },
   "estimate": {
-    "Description": "Observed value of the statistic, from derivatives/encoding/<task>_contrast.npz."
+    "Description": "Observed value of the statistic, in units of noise-corrected predictivity (delta r2)."
   },
   "ci95_low": {
     "Description": "Lower bound of the 95% bootstrap CI of estimate: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 2.5th percentile."
