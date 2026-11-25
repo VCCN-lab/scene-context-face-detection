@@ -45,7 +45,6 @@ from facescenes import encoding as E
 from facescenes import nan
 from facescenes import stats as S
 
-CACHE = cfg.ROOT / "derivatives" / "encoding"
 REFERENCE = "FaceExpect"
 # (label, tail) -- the direction each statistic is predicted to take.
 STATISTICS = [("contrast vs mean of others", "greater"),
@@ -117,8 +116,9 @@ def run(task, n_perm):
         out[f"observed_{key}"] = observed[key]
         out[f"p_{key}"] = np.array([S.permutation_p(observed[key][j], null[key][:, j], tail)
                                     for j, (_, tail) in enumerate(STATISTICS)])
-    CACHE.mkdir(parents=True, exist_ok=True)
-    np.savez(CACHE / f"{task}_contrast.npz", **out)
+    cache = cfg.OUTPUT / "encoding"
+    cache.mkdir(parents=True, exist_ok=True)
+    np.savez(cache / f"{task}_contrast.npz", **out)
 
 
 def main():

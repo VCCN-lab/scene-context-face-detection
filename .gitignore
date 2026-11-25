@@ -10,5 +10,8 @@ venv/
 # Available from the OSF project (DOI 10.17605/OSF.IO/5AYX8). The face masks stay.
 data/stimuli/*_face.png
 
+# Results written by a rerun; the released ones are in data/derivatives/.
+/derivatives/
+
 # progress log, not an output
 derivatives/contrast_test.rtf

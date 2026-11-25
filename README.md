@@ -9,19 +9,25 @@ from the Places365 dataset, whose image copyright stays with the original
 owners, and are available from the OSF project
 (https://doi.org/10.17605/OSF.IO/5AYX8). No analysis reads them; the image
 features and CNN activations computed from them are in
-`derivatives/stimulus_features/`, and the face masks are in
+`data/derivatives/stimulus_features/`, and the face masks are in
 `data/stimuli/masks/`.
+
+The dataset (`data/`, with its derivatives) is published on Zenodo and is
+downloaded into `data/` by `code/fetch_data.py`. To use a copy elsewhere, set
+`FACESCENES_DATA` to its path.
 
 ```
 data/            BIDS dataset: fixation-level events, participants, face masks
-derivatives/
-  stimulus_features/   the ten image predictors and the CNN activations
-  encoding/            cached permutation results (regenerated on demand)
-  tables/              the Supplementary Tables as TSV
-  source_data/         the numbers plotted in every figure panel, one TSV each
+  derivatives/   BIDS derivative datasets, as released:
+    stimulus_features/   the ten image predictors and the CNN activations
+    encoding/            cached permutation results
+    tables/              the Supplementary Tables as TSV
+    source_data/         the numbers plotted in every figure panel, one TSV each
+derivatives/     results of a rerun, same layout (not tracked by git)
 code/
   facescenes/    the analysis package
   run_*.py       one script per analysis, each runnable on its own
+  fetch_data.py  downloads and unpacks the dataset into data/
   export_bids.py how the raw recordings were reduced to data/
   build_notebooks.py   regenerates the notebooks
 tests/           unit tests and consistency checks (pytest)
@@ -37,21 +43,29 @@ every package version.
 ```bash
 uv sync
 cd code
+uv run python fetch_data.py                     # once; skipped if data/ exists
 uv run python run_behavioural_analyses.py       # seconds
 uv run python run_onset_gaze_control.py         # seconds
 uv run python run_reliability.py                # ~1 minute
-uv run python run_encoding_analyses.py          # ~1 hour at 5000 permutations
+uv run python run_encoding_analyses.py --force  # ~1 hour at 5000 permutations
 uv run python run_contrast_test.py              # ~15 minutes
 uv run python run_masked_face_analyses.py       # seconds
 uv run python run_layer_depth.py                # ~1 minute
-uv run python run_statistics_tables.py          # ~15 minutes; needs the two caches above
+uv run python run_statistics_tables.py          # ~15 minutes; reads the two caches above
 ```
 
 Without uv, `pip install -r requirements.txt` installs the same pinned
 versions, exported from `uv.lock`; then run the scripts with `python3`.
 
-Then open the notebooks (`uv run jupyter lab`). `figure3_encoding.ipynb` reads
-the cache written by `run_encoding_analyses.py`, so run that first.
+The released dataset is never modified. Scripts write their results to
+`derivatives/`, and readers of the cached permutation results
+(`run_statistics_tables.py`, the notebooks) take a rerun's from there when it
+exists and the released ones from `data/derivatives/encoding/` otherwise.
+Without `--force`, `run_encoding_analyses.py` reports the cached results
+instead of recomputing them. `uv run pytest` compares every rerun result in
+`derivatives/` with its released counterpart.
+
+Then open the notebooks (`uv run jupyter lab`).
 
 Each notebook writes its panels to `figures/` and the numbers behind each panel
 to `derivatives/source_data/<panel>.tsv` in the same call, so a figure and its

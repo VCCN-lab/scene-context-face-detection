@@ -252,6 +252,7 @@ packaging==26.4
     #   jupyterlab-server
     #   matplotlib
     #   nbconvert
+    #   pooch
     #   pytest
 pandas==2.3.3 ; python_full_version < '3.11'
     # via facescenes
@@ -272,11 +273,17 @@ pillow==13.0.0 ; python_full_version >= '3.11'
     #   facescenes
     #   matplotlib
 platformdirs==4.12.4 ; python_full_version < '3.11'
-    # via jupyter-core
+    # via
+    #   jupyter-core
+    #   pooch
 platformdirs==4.14.8 ; python_full_version >= '3.11'
-    # via jupyter-core
+    # via
+    #   jupyter-core
+    #   pooch
 pluggy==1.7.0
     # via pytest
+pooch==1.9.0
+    # via facescenes
 prometheus-client==0.26.0
     # via jupyter-server
 prompt-toolkit==3.0.53
@@ -343,7 +350,9 @@ referencing==0.37.0
     #   jsonschema-specifications
     #   jupyter-events
 requests==2.34.2
-    # via jupyterlab-server
+    # via
+    #   jupyterlab-server
+    #   pooch
 rfc3339-validator==0.1.4
     # via
     #   jsonschema

@@ -55,7 +55,7 @@
   ],
   "SourceDatasets": [
     {
-      "URL": "../../data"
+      "URL": "../.."
     },
     {
       "URL": "../stimulus_features"

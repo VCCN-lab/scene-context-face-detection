@@ -232,7 +232,9 @@ the shared contribution between them.
 
 Error bars are the SD across the 100 folds and are descriptive only — folds are
 overlapping resamples of the same images, so all inference is at the image level.
-Run `python3 ../code/run_encoding_analyses.py` first to build the cache.
+The results are read from the released cache in data/derivatives/encoding/,
+or from derivatives/encoding/ after a rerun with
+`python3 ../code/run_encoding_analyses.py --force`.
 
 Each table below gives, per condition, predictivity ± SD and `p>0` — the
 one-sided permutation test in which the latencies are shuffled across images and

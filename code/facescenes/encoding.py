@@ -179,7 +179,7 @@ N_CNN_LAYERS = 7
 def layer_predictivity(task, npz_name):
     """Noise-corrected single-feature predictivity of each CNN read-out layer.
 
-    `npz_name` is a file in derivatives/stimulus_features (cnn_scenefacedet.npz
+    `npz_name` is a file in cfg.FEATURES (cnn_scenefacedet.npz
     or cnn_untrained.npz). Each layer's face/no-face distance is used as a
     single predictor, scored over the same folds as every other model.
     Returns {condition: array of N_CNN_LAYERS values}.

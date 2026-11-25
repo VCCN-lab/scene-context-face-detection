@@ -34,8 +34,6 @@ RAW_PREDICTIVITY_LABEL = "Predictivity ($r^2$)"
 # which task each panel shows. Set to True for titled panels when exploring.
 SHOW_TITLES = False
 
-SOURCE_DATA = cfg.ROOT / "derivatives" / "source_data"
-
 
 def use_style(dpi=300):
     plt.rcParams["figure.dpi"] = dpi
@@ -130,7 +128,8 @@ def save(fig, name, data=None):
     Image.open(path).convert("RGB").save(path, dpi=(fig.dpi, fig.dpi))
     fig.savefig(path.with_suffix(".pdf"), bbox_inches="tight", facecolor="white")
     if data is not None:
-        SOURCE_DATA.mkdir(parents=True, exist_ok=True)
-        data.to_csv(SOURCE_DATA / (path.stem + ".tsv"), sep="\t", index=False,
+        out = cfg.OUTPUT / "source_data"
+        out.mkdir(parents=True, exist_ok=True)
+        data.to_csv(out / (path.stem + ".tsv"), sep="\t", index=False,
                     float_format="%.6g", na_rep="n/a")
     return path

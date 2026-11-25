@@ -24,6 +24,14 @@ from . import config as cfg
 from . import nan
 
 
+def results_path(kind, name):
+    """A cached result: the rerun's in cfg.OUTPUT if present, else the
+    released one in cfg.DERIVATIVES. `kind` is the derivative folder, e.g.
+    "encoding"."""
+    fresh = cfg.OUTPUT / kind / name
+    return fresh if fresh.exists() else cfg.DERIVATIVES / kind / name
+
+
 @functools.lru_cache(maxsize=None)
 def participants():
     """participants.tsv as a DataFrame."""

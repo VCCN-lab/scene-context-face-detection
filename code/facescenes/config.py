@@ -5,12 +5,32 @@ Nothing here is inferred at run time: if a value determines a figure or a
 statistic, it is written down explicitly so a reader can see it and change it.
 """
 
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-DATA = ROOT / "data"
-FEATURES = ROOT / "derivatives" / "stimulus_features"
+
+
+def data_root(environ=os.environ):
+    """The released BIDS dataset: $FACESCENES_DATA if set, else <repo>/data."""
+    return Path(environ.get("FACESCENES_DATA", ROOT / "data"))
+
+
+# The released dataset is read only. Its derivatives are nested in it, as BIDS
+# derivative datasets. Scripts write their results to OUTPUT instead, and
+# readers of cached results prefer a result in OUTPUT over the released one
+# (data.results_path).
+DATA = data_root()
+DERIVATIVES = DATA / "derivatives"
+FEATURES = DERIVATIVES / "stimulus_features"
+OUTPUT = ROOT / "derivatives"
 FIGURES = ROOT / "figures"
+
+# The published Zenodo record that download.fetch() unpacks into <repo>/data:
+# the archive's URL (a "doi:<DOI>/<file name>" URL resolves through Zenodo) and
+# its checksum ("md5:<hex digest>"). None until the record is published.
+ZENODO_URL = None
+ZENODO_HASH = None
 
 TASKS = ("facedetection", "movingwindow")
 TASK_LABEL = {"facedetection": "Face detection task",

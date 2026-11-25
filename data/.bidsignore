@@ -1,0 +1,3 @@
+# Stimulus list with the scene, no-face and mask file of each image index;
+# read by code/facescenes/data.py.
+stimulus_order.tsv

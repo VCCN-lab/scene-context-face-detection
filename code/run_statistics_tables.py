@@ -28,8 +28,9 @@ replacement and the whole cross-validation is rerun. Copies of a resampled image
 are always kept in the same fold, so an image can never be in the training and
 the test half at once. Noise correction uses the same reliability as the point
 estimate. The p-values are not recomputed here: they come from the permutation
-caches written by run_encoding_analyses.py and run_contrast_test.py, so the
-tables and the figures cannot disagree.
+caches written by run_encoding_analyses.py and run_contrast_test.py (a rerun's
+in derivatives/encoding/ if present, else the released ones), so the tables and
+the figures cannot disagree.
 
 Run: python3 run_statistics_tables.py [--bootstrap 1000]
      (needs both caches; about 15 minutes at 1000 resamples)
@@ -42,20 +43,21 @@ import pandas as pd
 from scipy import stats
 
 from facescenes import config as cfg
+from facescenes import data as D
 from facescenes import encoding as E
 from facescenes import nan
 from facescenes import stats as S
 import run_contrast_test as CT
 import run_masked_face_analyses as MASK
 
-CACHE = cfg.ROOT / "derivatives" / "encoding"
-OUT = cfg.ROOT / "derivatives" / "tables"
 N_BONF = 20       # ten features x two conditions, the family used in the text
 
 
 def write_table(df, name):
-    """Write `df` to OUT/<name>.tsv and return the path."""
-    path = OUT / f"{name}.tsv"
+    """Write `df` to <cfg.OUTPUT>/tables/<name>.tsv and return the path."""
+    out = cfg.OUTPUT / "tables"
+    out.mkdir(parents=True, exist_ok=True)
+    path = out / f"{name}.tsv"
     df.to_csv(path, sep="\t", index=False, na_rep="n/a")
     return path
 
@@ -127,7 +129,7 @@ def ci(a):
 
 
 def encoding_tables(task, boot):
-    res = dict(np.load(CACHE / f"{task}_encoding.npz", allow_pickle=True))
+    res = dict(np.load(D.results_path("encoding", f"{task}_encoding.npz")))
     n_img = len(res["images"])
     tables = {}
     for kind in ("single", "unique"):
@@ -156,7 +158,7 @@ def encoding_tables(task, boot):
 
 
 def contrast_table(task, boot):
-    c = np.load(CACHE / f"{task}_contrast.npz", allow_pickle=True)
+    c = np.load(D.results_path("encoding", f"{task}_contrast.npz"))
     labels = list(c["statistics"])
     pick = {"face expectation delta > 0": (0, "Face expectation: preview - no preview"),
             "mean delta of others < 0": (1, "Mean of other features: preview - no preview"),
@@ -177,7 +179,6 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--bootstrap", type=int, default=1000)
     a = ap.parse_args()
-    OUT.mkdir(parents=True, exist_ok=True)
     pd.set_option("display.width", 200, "display.max_columns", 30,
                   "display.float_format", "{:.3f}".format)
 
@@ -201,7 +202,7 @@ def main():
     for task in cfg.TASKS:
         rows += MASK.run(task)
     write_table(pd.DataFrame(rows), "masking_anova")
-    print(f"tables written to {OUT}")
+    print(f"tables written to {cfg.OUTPUT / 'tables'}")
 
 
 if __name__ == "__main__":

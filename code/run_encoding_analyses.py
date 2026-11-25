@@ -3,9 +3,12 @@
 Single-feature and unique predictivity for both experiments (Figure 3), with
 image-level permutation tests and standardised regression coefficients.
 
-Results are cached to derivatives/encoding/, because the permutations take
-roughly half an hour per experiment at the default 5000. The notebooks read the
-same cache, so the figures and this script cannot disagree.
+The permutations take roughly half an hour per experiment at the default 5000,
+so the results are cached. Without --force the released results in
+data/derivatives/encoding/ are read, or a rerun's in derivatives/encoding/ when
+one exists; with --force they are recomputed and written to
+derivatives/encoding/, leaving the released copy unchanged. The notebooks read
+the same cache, so the figures and this script cannot disagree.
 
 Three tests are run.
 
@@ -33,18 +36,17 @@ import argparse
 import numpy as np
 
 from facescenes import config as cfg
+from facescenes import data as D
 from facescenes import encoding as E
 from facescenes import nan
 from facescenes import stats as S
 
-CACHE = cfg.ROOT / "derivatives" / "encoding"
-
-
 def analyse(task, n_perm, force=False):
-    out_file = CACHE / f"{task}_encoding.npz"
-    if out_file.exists() and not force:
-        print(f"{task}: loading {out_file.name}")
-        return dict(np.load(out_file, allow_pickle=True))
+    name = f"{task}_encoding.npz"
+    cached = D.results_path("encoding", name)
+    if cached.exists() and not force:
+        print(f"{task}: loading {cached}")
+        return dict(np.load(cached))
 
     Z, y, keep, splits = E.design(task)
     n_img = len(keep)
@@ -113,8 +115,9 @@ def analyse(task, n_perm, force=False):
         res[f"beta_full_{cond}"] = nan.mean(f)
         res[f"beta_full_sd_{cond}"] = nan.std(f)
 
-    CACHE.mkdir(parents=True, exist_ok=True)
-    np.savez(out_file, **res)
+    out = cfg.OUTPUT / "encoding"
+    out.mkdir(parents=True, exist_ok=True)
+    np.savez(out / name, **res)
     return res
 
 
