@@ -31,21 +31,27 @@ figures/         every panel as PNG (300 dpi, RGB) and as vector PDF
 
 ## Quick start
 
+The environment is managed with [uv](https://docs.astral.sh/uv/); `uv.lock` pins
+every package version.
+
 ```bash
-pip install -r requirements.txt
+uv sync
 cd code
-python3 run_behavioural_analyses.py       # seconds
-python3 run_onset_gaze_control.py         # seconds
-python3 run_reliability.py                # ~1 minute
-python3 run_encoding_analyses.py          # ~1 hour at 5000 permutations
-python3 run_contrast_test.py              # ~15 minutes
-python3 run_masked_face_analyses.py       # seconds
-python3 run_layer_depth.py                # ~1 minute
-python3 run_statistics_tables.py          # ~15 minutes; needs the two caches above
+uv run python run_behavioural_analyses.py       # seconds
+uv run python run_onset_gaze_control.py         # seconds
+uv run python run_reliability.py                # ~1 minute
+uv run python run_encoding_analyses.py          # ~1 hour at 5000 permutations
+uv run python run_contrast_test.py              # ~15 minutes
+uv run python run_masked_face_analyses.py       # seconds
+uv run python run_layer_depth.py                # ~1 minute
+uv run python run_statistics_tables.py          # ~15 minutes; needs the two caches above
 ```
 
-Then open the notebooks. `figure3_encoding.ipynb` reads the cache written by
-`run_encoding_analyses.py`, so run that first.
+Without uv, `pip install -r requirements.txt` installs the same pinned
+versions, exported from `uv.lock`; then run the scripts with `python3`.
+
+Then open the notebooks (`uv run jupyter lab`). `figure3_encoding.ipynb` reads
+the cache written by `run_encoding_analyses.py`, so run that first.
 
 Each notebook writes its panels to `figures/` and the numbers behind each panel
 to `derivatives/source_data/<panel>.csv` in the same call, so a figure and its
@@ -55,7 +61,7 @@ set `SHOW_TITLES = True` in `facescenes/plotting.py` to label them by task.
 ## Tests
 
 ```bash
-python3 -m pytest tests          # about 30 seconds
+uv run pytest                   # about 30 seconds
 ```
 
 `test_stats.py`, `test_encoding.py` and `test_behaviour.py` are unit tests on
