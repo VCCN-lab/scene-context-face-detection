@@ -80,6 +80,16 @@ def text(x):
     return str(a[0]) if a.size else ""
 
 
+def yes_no(answer):
+    """Code a typed yes/no answer ("y", "Yes", ...) as "yes" or "no"; an empty
+    answer becomes "n/a"."""
+    coded = {"y": "yes", "yes": "yes", "n": "no", "no": "no", "": "n/a"}
+    key = answer.strip().lower()
+    if key not in coded:
+        raise ValueError(f"not a yes/no answer: {answer!r}")
+    return coded[key]
+
+
 def fixations(cell, endtimes):
     """(onset, duration, x, y) per fixation, onsets relative to display onset."""
     out = []
@@ -152,7 +162,7 @@ def export_task(task, cfg, sub_offset, raw_root):
             age=int(scalar(R.Age)) if scalar(R.Age) else "n/a",
             sex=text(R.Sex).lower() or "n/a",
             handedness=text(R.Handedness).lower() or "n/a",
-            corrected_vision=text(R.CorrectedVision).lower() or "n/a"))
+            corrected_vision=yes_no(text(R.CorrectedVision))))
         print(f"  {sid}  {len(ev):5d} fixation events")
     return people, len(subs)
 
