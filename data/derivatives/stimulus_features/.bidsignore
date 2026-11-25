@@ -1,0 +1,7 @@
+# Study-level files without BIDS entities, each documented by its JSON
+# sidecar.
+cnn_*
+*_size_eccentricity.*
+contrast_edge_density.*
+face_expectation.*
+pixel_difference.*

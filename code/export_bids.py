@@ -16,8 +16,9 @@ What it does
 * Reconstructs each fixation's onset as FixEndTimes - (entime - sttime), i.e.
   end-of-fixation minus its duration, relative to search-display onset.
 * Writes one row per fixation to
-  sub-<ID>/eyetrack/sub-<ID>_task-<task>_events.tsv, with the trial it belongs
-  to, the condition, and the stimulus.
+  sub-<ID>/beh/sub-<ID>_task-<task>_events.tsv, with the trial it belongs
+  to, the condition, and the scene's file name (column stimulus; the
+  photographs are not part of the release).
 * Pseudonymises participants: the raw folders are named with initials plus a
   number, which are potentially identifying. They become sub-001, sub-002, ...
   in the order of the sorted raw folder names. The mapping is deliberately NOT
@@ -133,7 +134,7 @@ def export_task(task, cfg, sub_offset, raw_root):
                     rows.append(dict(
                         onset=round(on, 6), duration=round(dur, 6),
                         trial=t + 1, phase=phase, trial_type=cond,
-                        stim_file=f"stimuli/{stim}",
+                        stimulus=stim,
                         fixation_index=j + 1,
                         gaze_x=None if gx is None else round(gx, 2),
                         gaze_y=None if gy is None else round(gy, 2),
@@ -141,7 +142,7 @@ def export_task(task, cfg, sub_offset, raw_root):
                         trial_duration=round(float(td[t]), 6),
                         timeout=timeout))
         ev = pd.DataFrame(rows)
-        dest = OUT / sid / "eyetrack"
+        dest = OUT / sid / "beh"
         dest.mkdir(parents=True, exist_ok=True)
         ev.to_csv(dest / f"{sid}_task-{task}_events.tsv", sep="\t",
                   index=False, na_rep="n/a")

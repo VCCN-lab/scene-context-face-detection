@@ -63,7 +63,7 @@ def stimulus_names():
 @functools.lru_cache(maxsize=None)
 def events(participant, task):
     """Fixation-level events for one participant."""
-    f = (cfg.DATA / participant / "eyetrack"
+    f = (cfg.DATA / participant / "beh"
          / f"{participant}_task-{task}_events.tsv")
     return pd.read_csv(f, sep="\t")
 
@@ -81,7 +81,7 @@ def trials(task, apply_exclusions=True):
         ev = events(pid, task)
         search = ev[(ev["phase"] == "search") & (ev["timeout"] == 0)]
         for trial, g in search.groupby("trial", sort=True):
-            img = names[g["stim_file"].iloc[0].split("/")[-1]]
+            img = names[g["stimulus"].iloc[0]]
             if img in drop:
                 continue
             valid = g[g["onset"] > cfg.MIN_FIXATION_ONSET_S]

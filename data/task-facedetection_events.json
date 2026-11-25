@@ -24,8 +24,8 @@
       "no_preview": "A grey placeholder was shown instead."
     }
   },
-  "stim_file": {
-    "Description": "Scene shown on this trial, relative to the stimuli directory."
+  "stimulus": {
+    "Description": "File name of the scene shown on this trial, as in column stimulus of stimulus_order.tsv. The scene photographs are adapted from the Places365 dataset, whose image copyright stays with the original owners; they are not part of this dataset and are available from the OSF project (https://doi.org/10.17605/OSF.IO/5AYX8)."
   },
   "fixation_index": {
     "Description": "Position of this fixation within its phase, starting at 1."
@@ -47,5 +47,18 @@
   },
   "timeout": {
     "Description": "1 if the search display ran to its limit without the face being fixated (6 s in the face detection task, 20 s in the moving-window task). These trials have no detection latency and are excluded from every analysis."
+  },
+  "StimulusPresentation": {
+    "ScreenDistance": 0.46,
+    "ScreenSize": [
+      0.6,
+      0.34
+    ],
+    "ScreenResolution": [
+      3840,
+      2160
+    ],
+    "ScreenRefreshRate": 60,
+    "SoftwareName": "Psychtoolbox"
   }
 }

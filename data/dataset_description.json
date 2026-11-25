@@ -12,6 +12,12 @@
   "Acknowledgements": "",
   "HowToAcknowledge": "Please cite the accompanying paper.",
   "ReferencesAndLinks": [],
+  "SourceDatasets": [
+    {
+      "DOI": "doi:10.17605/OSF.IO/5AYX8",
+      "URL": "https://doi.org/10.17605/OSF.IO/5AYX8"
+    }
+  ],
   "EthicsApprovals": [
     "Local ethics committee of Justus Liebig University Giessen"
   ],
