@@ -1,0 +1,13 @@
+{
+  "participant": {
+    "Description": "Participant identifier, as in data/participants.tsv."
+  },
+  "preview_mean_latency_ms": {
+    "Description": "Mean across the participant's preview trials of detection latency. Detection latency: onset of the last fixation of the trial (the one that landed on the face) relative to search-display onset. Fixations beginning within 100 ms of onset are discarded, timeout trials are dropped, and in the face detection task the stimuli in config.EXCLUDE_STIMULI are excluded. Plotted on the raw scale; the paired test is computed on log latency.",
+    "Units": "ms"
+  },
+  "no_preview_mean_latency_ms": {
+    "Description": "Mean across the participant's no-preview trials of detection latency. Detection latency: onset of the last fixation of the trial (the one that landed on the face) relative to search-display onset. Fixations beginning within 100 ms of onset are discarded, timeout trials are dropped, and in the face detection task the stimuli in config.EXCLUDE_STIMULI are excluded. Plotted on the raw scale; the paired test is computed on log latency.",
+    "Units": "ms"
+  }
+}

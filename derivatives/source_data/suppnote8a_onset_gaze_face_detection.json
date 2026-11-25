@@ -1,0 +1,21 @@
+{
+  "participant": {
+    "Description": "Participant identifier, as in data/participants.tsv."
+  },
+  "preview_median_d_centre_deg": {
+    "Description": "Median across the participant's preview trials of the distance of gaze at search-display onset from the screen centre. Gaze position at search-display onset is the mean position of the fixation in progress at onset (at least 40 ms long, beginning within 100 ms of onset); trials without one are dropped. Converted at 51.383 pixels per degree.",
+    "Units": "deg"
+  },
+  "no_preview_median_d_centre_deg": {
+    "Description": "Median across the participant's no-preview trials of the distance of gaze at search-display onset from the screen centre. Gaze position at search-display onset is the mean position of the fixation in progress at onset (at least 40 ms long, beginning within 100 ms of onset); trials without one are dropped. Converted at 51.383 pixels per degree.",
+    "Units": "deg"
+  },
+  "preview_median_d_face_deg": {
+    "Description": "Median across the participant's preview trials of the distance of gaze at search-display onset from the face centroid. Gaze position at search-display onset is the mean position of the fixation in progress at onset (at least 40 ms long, beginning within 100 ms of onset); trials without one are dropped. Converted at 51.383 pixels per degree.",
+    "Units": "deg"
+  },
+  "no_preview_median_d_face_deg": {
+    "Description": "Median across the participant's no-preview trials of the distance of gaze at search-display onset from the face centroid. Gaze position at search-display onset is the mean position of the fixation in progress at onset (at least 40 ms long, beginning within 100 ms of onset); trials without one are dropped. Converted at 51.383 pixels per degree.",
+    "Units": "deg"
+  }
+}

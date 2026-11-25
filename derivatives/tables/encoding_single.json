@@ -1,0 +1,81 @@
+{
+  "task": {
+    "Description": "Experiment the row belongs to.",
+    "Levels": {
+      "facedetection": "Face detection task: whole scene visible, 6 s limit.",
+      "movingwindow": "Moving-window task: only a gaze-contingent aperture around fixation visible, 20 s limit."
+    }
+  },
+  "feature": {
+    "Description": "Predictor.",
+    "Levels": {
+      "Face expect.": "Face expectation (stimulus_features/face_expectation.npy).",
+      "Pixel": "Pixel difference (stimulus_features/pixel_difference.npy).",
+      "Edge density": "Edge density, variable Edge_r32 of stimulus_features/contrast_edge_density.mat.",
+      "RMS contrast": "RMS contrast, variable RMS_r32 of stimulus_features/contrast_edge_density.mat.",
+      "Face size": "Face size, column 1 of size_locs in stimulus_features/face_size_eccentricity.mat.",
+      "Face ecc.": "Face eccentricity, column 2 of size_locs in stimulus_features/face_size_eccentricity.mat.",
+      "Body size": "Body size, column 1 of size_locs in stimulus_features/body_size_eccentricity.mat.",
+      "Body ecc.": "Body eccentricity, column 2 of size_locs in stimulus_features/body_size_eccentricity.mat.",
+      "SceneFaceDet": "CNN face/no-face distance, array layer_means_resp_face_cos_f_n, layer index 6 (last fully connected layer), of stimulus_features/cnn_scenefacedet.npz.",
+      "Untrained": "Same CNN distance from the untrained network, stimulus_features/cnn_untrained.npz."
+    }
+  },
+  "n_images": {
+    "Description": "Number of images analysed."
+  },
+  "preview_beta": {
+    "Description": "Standardised regression coefficient of the single-feature model, mean across folds; predictor and dependent variable z-scored within each training fold. Negative means faster detection. Not noise-corrected. Condition: preview."
+  },
+  "preview_beta_sd": {
+    "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For preview_beta."
+  },
+  "preview_r2": {
+    "Description": "Single-feature predictivity of a model with this predictor alone. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: preview."
+  },
+  "preview_r2_ci95_low": {
+    "Description": "Lower bound of the 95% bootstrap CI of preview_r2: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 2.5th percentile."
+  },
+  "preview_r2_ci95_high": {
+    "Description": "Upper bound of the 95% bootstrap CI of preview_r2: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 97.5th percentile."
+  },
+  "preview_p": {
+    "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For preview_r2."
+  },
+  "preview_p_bonferroni": {
+    "Description": "preview_p multiplied by 20 (ten features x two conditions), capped at 1."
+  },
+  "no_preview_beta": {
+    "Description": "Standardised regression coefficient of the single-feature model, mean across folds; predictor and dependent variable z-scored within each training fold. Negative means faster detection. Not noise-corrected. Condition: no-preview."
+  },
+  "no_preview_beta_sd": {
+    "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For no_preview_beta."
+  },
+  "no_preview_r2": {
+    "Description": "Single-feature predictivity of a model with this predictor alone. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: no-preview."
+  },
+  "no_preview_r2_ci95_low": {
+    "Description": "Lower bound of the 95% bootstrap CI of no_preview_r2: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 2.5th percentile."
+  },
+  "no_preview_r2_ci95_high": {
+    "Description": "Upper bound of the 95% bootstrap CI of no_preview_r2: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 97.5th percentile."
+  },
+  "no_preview_p": {
+    "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For no_preview_r2."
+  },
+  "no_preview_p_bonferroni": {
+    "Description": "no_preview_p multiplied by 20 (ten features x two conditions), capped at 1."
+  },
+  "delta": {
+    "Description": "preview_r2 minus no_preview_r2."
+  },
+  "delta_ci95_low": {
+    "Description": "Lower bound of the 95% bootstrap CI of delta: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 2.5th percentile."
+  },
+  "delta_ci95_high": {
+    "Description": "Upper bound of the 95% bootstrap CI of delta: 1000 resamples of images with replacement, the whole cross-validation rerun with copies of an image kept in the same fold; 97.5th percentile."
+  },
+  "delta_p": {
+    "Description": "Two-sided permutation p for delta: the two condition means are exchanged for a random subset of images and the cross-validation rerun, 5000 permutations; the null is recentred to remove the offset that the two different reliabilities place on it."
+  }
+}

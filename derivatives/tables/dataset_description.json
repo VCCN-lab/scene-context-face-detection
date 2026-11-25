@@ -1,0 +1,31 @@
+{
+  "Name": "Scene previews and face detection: supplementary tables",
+  "BIDSVersion": "1.9.0",
+  "DatasetType": "derivative",
+  "License": "CC-BY-4.0",
+  "Authors": [
+    "Sule Tasliyurt-Celebi",
+    "Benjamin de Haas",
+    "Melissa L.-H. Võ",
+    "Katharina Dobs"
+  ],
+  "GeneratedBy": [
+    {
+      "Name": "run_statistics_tables.py",
+      "Version": "1.0.0",
+      "Description": "Supplementary Tables: feature correlations, encoding results with bootstrap CIs (1000 resamples, seed config.SEED + 1), planned contrasts, and the masking ANOVAs computed by run_masked_face_analyses.py. p-values of the encoding results are read from derivatives/encoding.",
+      "CodeURL": "https://github.com/VCCN-lab/scene-context-face-detection"
+    }
+  ],
+  "SourceDatasets": [
+    {
+      "URL": "../../data"
+    },
+    {
+      "URL": "../stimulus_features"
+    },
+    {
+      "URL": "../encoding"
+    }
+  ]
+}

@@ -1,0 +1,161 @@
+{
+  "Description": "Encoding-model results for the movingwindow task over 120 images (Figure 3, Supplementary Figure 4, Supplementary Tables). Every array except images has one entry per predictor, in the order of features.",
+  "Arrays": {
+    "features": {
+      "Description": "Predictor names, in the order of every other array: FaceExpect, Pixel, Crowding, Clutter_rms, FaceSize, FaceEcc, BodySize, BodyEcc, SceneFaceDet, UntrainedCNN.",
+      "Shape": [
+        10
+      ]
+    },
+    "images": {
+      "Description": "Indices of the 120 analysed images into data/stimulus_order.tsv (column image_index).",
+      "Shape": [
+        120
+      ]
+    },
+    "single_preview": {
+      "Description": "Single-feature predictivity of a model with this predictor alone. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "unique_preview": {
+      "Description": "Unique predictivity: predictivity of the full 9-predictor model minus that of the same model without this predictor. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: preview. NaN for UntrainedCNN, which is not in the full model.",
+      "Shape": [
+        10
+      ]
+    },
+    "single_sd_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For single_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "unique_sd_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For unique_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "p_single_preview": {
+      "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For single_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "p_unique_preview": {
+      "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For unique_preview. NaN for UntrainedCNN.",
+      "Shape": [
+        10
+      ]
+    },
+    "single_no_preview": {
+      "Description": "Single-feature predictivity of a model with this predictor alone. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: no-preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "unique_no_preview": {
+      "Description": "Unique predictivity: predictivity of the full 9-predictor model minus that of the same model without this predictor. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: no-preview. NaN for UntrainedCNN, which is not in the full model.",
+      "Shape": [
+        10
+      ]
+    },
+    "single_sd_no_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For single_no_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "unique_sd_no_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For unique_no_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "p_single_no_preview": {
+      "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For single_no_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "p_unique_no_preview": {
+      "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For unique_no_preview. NaN for UntrainedCNN.",
+      "Shape": [
+        10
+      ]
+    },
+    "delta_single": {
+      "Description": "single_preview minus single_no_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "p_delta_single": {
+      "Description": "Two-sided permutation p for delta_single: the two condition means are exchanged for a random subset of images and the cross-validation rerun, 5000 permutations; the null is recentred to remove the offset that the two different reliabilities place on it.",
+      "Shape": [
+        10
+      ]
+    },
+    "delta_unique": {
+      "Description": "unique_preview minus unique_no_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "p_delta_unique": {
+      "Description": "Two-sided permutation p for delta_unique: the two condition means are exchanged for a random subset of images and the cross-validation rerun, 5000 permutations; the null is recentred to remove the offset that the two different reliabilities place on it.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_single_preview": {
+      "Description": "Standardised regression coefficient of the single-feature model, mean across folds; predictor and dependent variable z-scored within each training fold. Negative means faster detection. Not noise-corrected. Condition: preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_single_sd_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For beta_single_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_full_preview": {
+      "Description": "Standardised regression coefficient in the full 9-predictor model, mean across folds, standardised as beta_single_preview. NaN for UntrainedCNN. Condition: preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_full_sd_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For beta_full_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_single_no_preview": {
+      "Description": "Standardised regression coefficient of the single-feature model, mean across folds; predictor and dependent variable z-scored within each training fold. Negative means faster detection. Not noise-corrected. Condition: no-preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_single_sd_no_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For beta_single_no_preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_full_no_preview": {
+      "Description": "Standardised regression coefficient in the full 9-predictor model, mean across folds, standardised as beta_single_no_preview. NaN for UntrainedCNN. Condition: no-preview.",
+      "Shape": [
+        10
+      ]
+    },
+    "beta_full_sd_no_preview": {
+      "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For beta_full_no_preview.",
+      "Shape": [
+        10
+      ]
+    }
+  }
+}

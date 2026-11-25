@@ -1,0 +1,29 @@
+{
+  "network": {
+    "Description": "CNN providing the predictor.",
+    "Levels": {
+      "Untrained": "Untrained CNN (stimulus_features/cnn_untrained*.npz).",
+      "SceneFaceDet": "Trained CNN (stimulus_features/cnn_scenefacedet*.npz)."
+    }
+  },
+  "condition": {
+    "Description": "Preview condition.",
+    "Levels": {
+      "preview": "The scene was previewed before the search display.",
+      "no_preview": "A grey placeholder was shown instead of the preview."
+    }
+  },
+  "face": {
+    "Description": "Whether the CNN predictor was computed with the face visible or occluded.",
+    "Levels": {
+      "visible": "Unmasked images (cnn_*.npz).",
+      "masked": "Face region occluded by a grey mask (cnn_*_face_masked.npz)."
+    }
+  },
+  "r2": {
+    "Description": "Single-feature predictivity of the CNN predictor. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY)."
+  },
+  "sd_across_folds": {
+    "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For r2."
+  }
+}

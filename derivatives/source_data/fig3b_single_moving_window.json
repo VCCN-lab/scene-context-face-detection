@@ -1,0 +1,41 @@
+{
+  "feature": {
+    "Description": "Predictor.",
+    "Levels": {
+      "Face expect.": "Face expectation (stimulus_features/face_expectation.npy).",
+      "Pixel": "Pixel difference (stimulus_features/pixel_difference.npy).",
+      "Edge density": "Edge density, variable Edge_r32 of stimulus_features/contrast_edge_density.mat.",
+      "RMS contrast": "RMS contrast, variable RMS_r32 of stimulus_features/contrast_edge_density.mat.",
+      "Face size": "Face size, column 1 of size_locs in stimulus_features/face_size_eccentricity.mat.",
+      "Face ecc.": "Face eccentricity, column 2 of size_locs in stimulus_features/face_size_eccentricity.mat.",
+      "Body size": "Body size, column 1 of size_locs in stimulus_features/body_size_eccentricity.mat.",
+      "Body ecc.": "Body eccentricity, column 2 of size_locs in stimulus_features/body_size_eccentricity.mat.",
+      "SceneFaceDet": "CNN face/no-face distance, array layer_means_resp_face_cos_f_n, layer index 6 (last fully connected layer), of stimulus_features/cnn_scenefacedet.npz.",
+      "Untrained": "Same CNN distance from the untrained network, stimulus_features/cnn_untrained.npz."
+    }
+  },
+  "preview_r2": {
+    "Description": "Single-feature predictivity of a model with this predictor alone. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: preview."
+  },
+  "preview_sd_across_folds": {
+    "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For preview_r2."
+  },
+  "preview_p": {
+    "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For preview_r2."
+  },
+  "preview_p_bonferroni": {
+    "Description": "preview_p multiplied by 20 (ten features x two conditions), capped at 1."
+  },
+  "no_preview_r2": {
+    "Description": "Single-feature predictivity of a model with this predictor alone. Predictivity: signed squared Spearman correlation, sign(r) * r^2, between predicted and observed held-out values of the per-image mean log detection latency (log of the geometric mean across participants), averaged over the 100 folds of 50 balanced repeated two-fold splits over images, divided by the split-half reliability of the condition (config.RELIABILITY). Condition: no-preview."
+  },
+  "no_preview_sd_across_folds": {
+    "Description": "Standard deviation of the value across the 100 cross-validation folds. Folds overlap, so this is descriptive and is not used for inference. For no_preview_r2."
+  },
+  "no_preview_p": {
+    "Description": "One-sided permutation p for predictivity > 0: latencies shuffled across images and the whole cross-validation rerun, 5000 permutations, p = (1 + #null >= observed) / (1 + 5000). For no_preview_r2."
+  },
+  "no_preview_p_bonferroni": {
+    "Description": "no_preview_p multiplied by 20 (ten features x two conditions), capped at 1."
+  }
+}

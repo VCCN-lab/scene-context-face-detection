@@ -1,0 +1,13 @@
+{
+  "image": {
+    "Description": "Scene, as in column stimulus of data/stimulus_order.tsv; the 108 analysed images."
+  },
+  "preview_geometric_mean_ms": {
+    "Description": "Geometric mean across participants of the image's preview-trial detection latencies (exponential of the mean log latency). Detection latency: onset of the last fixation of the trial (the one that landed on the face) relative to search-display onset. Fixations beginning within 100 ms of onset are discarded, timeout trials are dropped, and in the face detection task the stimuli in config.EXCLUDE_STIMULI are excluded.",
+    "Units": "ms"
+  },
+  "no_preview_geometric_mean_ms": {
+    "Description": "Geometric mean across participants of the image's no-preview-trial detection latencies (exponential of the mean log latency). Detection latency: onset of the last fixation of the trial (the one that landed on the face) relative to search-display onset. Fixations beginning within 100 ms of onset are discarded, timeout trials are dropped, and in the face detection task the stimuli in config.EXCLUDE_STIMULI are excluded.",
+    "Units": "ms"
+  }
+}

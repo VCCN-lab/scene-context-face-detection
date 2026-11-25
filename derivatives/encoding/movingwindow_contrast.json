@@ -1,0 +1,35 @@
+{
+  "Description": "Planned contrasts of face expectation against the other predictors for the movingwindow task, for the single-feature and the unique model.",
+  "Arrays": {
+    "statistics": {
+      "Description": "Labels of the four statistics, in the order of the other arrays: 'contrast vs mean of others' = delta(face expectation) - mean delta of the other features; 'contrast vs max of others' = delta(face expectation) - largest delta of the other features; 'face expectation delta > 0' = delta(face expectation); 'mean delta of others < 0' = mean delta of the other features. delta is noise-corrected predictivity in the preview minus the no-preview condition.",
+      "Shape": [
+        4
+      ]
+    },
+    "observed_single": {
+      "Description": "Observed value of each statistic, from single-feature predictivity.",
+      "Shape": [
+        4
+      ]
+    },
+    "p_single": {
+      "Description": "Permutation p of each statistic, one-sided in the direction given by its label (greater for the first three, less for the last). Null: the two condition means are exchanged for a random subset of images and the cross-validation rerun, with both pseudo-conditions noise-corrected by the average of the two reliabilities; 5000 permutations. For observed_single.",
+      "Shape": [
+        4
+      ]
+    },
+    "observed_unique": {
+      "Description": "Observed value of each statistic, from unique predictivity (the eight other features of the full model).",
+      "Shape": [
+        4
+      ]
+    },
+    "p_unique": {
+      "Description": "Permutation p of each statistic, one-sided in the direction given by its label (greater for the first three, less for the last). Null: the two condition means are exchanged for a random subset of images and the cross-validation rerun, with both pseudo-conditions noise-corrected by the average of the two reliabilities; 5000 permutations. For observed_unique.",
+      "Shape": [
+        4
+      ]
+    }
+  }
+}

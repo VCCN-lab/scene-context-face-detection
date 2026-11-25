@@ -1,0 +1,11 @@
+{
+  "participant": {
+    "Description": "Participant identifier, as in data/participants.tsv."
+  },
+  "preview_mean_n_fixations": {
+    "Description": "Mean across the participant's preview trials of the number of fixations beginning more than 100 ms after search-display onset, up to and including the fixation that landed on the face."
+  },
+  "no_preview_mean_n_fixations": {
+    "Description": "Mean across the participant's no-preview trials of the number of fixations beginning more than 100 ms after search-display onset, up to and including the fixation that landed on the face."
+  }
+}
