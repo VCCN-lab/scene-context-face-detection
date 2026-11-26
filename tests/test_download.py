@@ -69,6 +69,16 @@ def test_fetch_rejects_a_wrong_checksum(tmp_path, url):
     assert not (dest / "data").exists()
 
 
+def test_fetch_fills_an_empty_data_folder(tmp_path, archive, url):
+    """An empty data/, e.g. a mount point, does not count as a dataset."""
+    dest = tmp_path / "repo"
+    (dest / "data").mkdir(parents=True)
+    data = DL.fetch(url, md5(archive), dest=dest, cache=tmp_path / "cache")
+    assert data == dest / "data"
+    for name, text in FILES.items():
+        assert (dest / name).read_text() == text
+
+
 def test_fetch_leaves_existing_data_untouched(tmp_path, archive, url):
     dest = tmp_path / "repo"
     (dest / "data").mkdir(parents=True)
