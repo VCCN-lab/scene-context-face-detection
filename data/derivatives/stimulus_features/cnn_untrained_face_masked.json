@@ -1,0 +1,96 @@
+{
+  "Description": "Responses of the untrained network to each scene, as arrays of 7 read-out layers x 120 images (order of stimulus_order.tsv). The analyses use layer_means_resp_face_cos_f_n. Computed with the face region of each scene occluded by a grey mask; used in run_masked_face_analyses.py (Supplementary Figure 6). The network, its training and how the responses were computed are not documented in this release.",
+  "Arrays": {
+    "layer_means_resp_face_l2_n_f": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_l2_f_n": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_cos_f_n": {
+      "Description": "Used as the CNN predictor: the representational distance between a scene with a face and the same scene without one (as described in code/run_masked_face_analyses.py; read in code/facescenes/encoding.py). Layer index 6, the last fully connected layer, is the predictor 'Untrained' with the face masked.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_l2_with": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_l2_no": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_mean_f_n": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_mean_n_f": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_mean_with": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_mean_no": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_max_n_f": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_max_f_n": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_max_with": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    },
+    "layer_means_resp_face_max_no": {
+      "Description": "Not used by the analysis code.",
+      "Shape": [
+        7,
+        120
+      ]
+    }
+  }
+}
