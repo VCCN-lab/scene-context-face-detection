@@ -2,7 +2,7 @@
   "network": {
     "Description": "CNN providing the predictor.",
     "Levels": {
-      "UntrainedCNN": "Untrained CNN (stimulus_features/cnn_untrained.npz).",
+      "Untrained": "Untrained CNN (stimulus_features/cnn_untrained.npz).",
       "SceneFaceDet": "Trained CNN (stimulus_features/cnn_scenefacedet.npz)."
     }
   },

@@ -109,6 +109,7 @@ vectors would turn this into a quantile-quantile plot and break the pairing.""")
     ax.set_ylim(lo, hi)
     ax.set_yticks(np.arange(lo, hi + step / 2, step))
     ax.set_xticks([0, 1])
+    ax.tick_params(axis="y", labelsize=P.FONT - 12)   # as in Fig. 1d/e
     P.title(ax, cfg.TASK_LABEL[task], fontsize=P.FONT - 6, pad=12)
     ax.text(.5, .96, P.significance(r["p"]), ha="center", va="top",
             transform=ax.transAxes, fontsize=P.FONT - 6)
@@ -120,6 +121,7 @@ vectors would turn this into a quantile-quantile plot and break the pairing.""")
     else:
         stub.set_ylim(0, lo * .04)          # a sliver of the axis, so 0 is shown
         stub.set_yticks([0])
+        stub.tick_params(axis="y", labelsize=P.FONT - 12)
         stub.set_xticklabels(labels, fontsize=P.FONT - 8)
         ax.spines["bottom"].set_visible(False)
         stub.spines["top"].set_visible(False)
@@ -155,7 +157,7 @@ The slope is tested against 1. Because no-preview latency is itself measured wit
 error, least squares attenuates the slope: a *true* slope of 1 would be observed
 as roughly the reliability of the x variable. The disattenuated slope and that
 benchmark are both reported, so the compression is not read off an artefact."""),
-    code('''def panel_scatter(task, fname, ticks):
+    code('''def panel_scatter(task, fname, ticks, lim, minor):
     lm = D.image_means(task, log=True)          # mean of log seconds
     keep = D.analysable_images(task)
     lx = lm[1, keep] + np.log(1000)              # no preview, log ms
@@ -169,7 +171,7 @@ benchmark are both reported, so the compression is not read off an artefact.""")
     ci = np.percentile(boot, [2.5, 97.5])
     rel_x = cfg.RELIABILITY_PEARSON[task]["no_preview"]
 
-    lo, hi = ticks[0], ticks[-1]
+    lo, hi = lim
     fig, ax = plt.subplots(figsize=(7, 7))
     ax.plot([lo, hi], [lo, hi], ":", color="grey", lw=2, label="Identity (slope = 1)")
     ax.scatter(x, y, s=25, color="k", alpha=.55)
@@ -181,10 +183,13 @@ benchmark are both reported, so the compression is not read off an artefact.""")
     ax.set_xlim(lo, hi); ax.set_ylim(lo, hi); ax.set_aspect("equal")
     ax.set_xticks(ticks); ax.set_yticks(ticks)
     ax.set_xticklabels([str(t) for t in ticks]); ax.set_yticklabels([str(t) for t in ticks])
-    ax.minorticks_off()
+    # log axes: conventional tick values whose uneven spacing shows the scale,
+    # plus unlabelled minor ticks
+    ax.set_xticks(minor, minor=True); ax.set_yticks(minor, minor=True)
+    ax.set_xticklabels([], minor=True); ax.set_yticklabels([], minor=True)
     ax.tick_params(labelsize=P.FONT - 12)
-    ax.set_xlabel("No-preview latency (ms)", fontsize=P.FONT - 8)
-    ax.set_ylabel("Preview latency (ms)", fontsize=P.FONT - 8)
+    ax.set_xlabel("No-preview latency (ms, log scale)", fontsize=P.FONT - 8)
+    ax.set_ylabel("Preview latency (ms, log scale)", fontsize=P.FONT - 8)
     P.title(ax, cfg.TASK_LABEL[task], fontsize=P.FONT - 6, pad=12)
     ax.legend(fontsize=P.FONT - 14, frameon=False, loc="upper left")
     src = pd.DataFrame({"image": np.asarray(D.stimulus_names())[keep],
@@ -205,9 +210,11 @@ benchmark are both reported, so the compression is not read off an artefact.""")
 
 
 panel_scatter("facedetection", "fig1d_scatter_face_detection.png",
-              ticks=[150, 200, 300, 450])'''),
+              ticks=[150, 200, 300, 400], lim=(150, 450),
+              minor=range(160, 450, 10))'''),
     code('panel_scatter("movingwindow", "fig1e_scatter_moving_window.png",\n'
-         '              ticks=[400, 1000, 2000, 4000, 6000])'),
+         '              ticks=[500, 1000, 2000, 5000], lim=(400, 6000),\n'
+         '              minor=[400, 600, 700, 800, 900, 3000, 4000, 6000])'),
 ]
 
 # --------------------------------------------------------------- Figure 3
@@ -535,6 +542,7 @@ reported for description."""),
     ax.set_ylim(lo, hi)
     ax.set_yticks(np.arange(lo, hi + step / 2, step))
     ax.set_xticks([0, 1])
+    ax.tick_params(axis="y", labelsize=P.FONT - 12)   # as in Fig. 1d/e
     P.title(ax, cfg.TASK_LABEL[task], fontsize=P.FONT - 6, pad=12)
     ax.text(.5, .96, P.significance(result["p"]), ha="center", va="top",
             transform=ax.transAxes, fontsize=P.FONT - 6)
@@ -546,6 +554,7 @@ reported for description."""),
     else:
         stub.set_ylim(0, lo * .04)          # a sliver of the axis, so 0 is shown
         stub.set_yticks([0])
+        stub.tick_params(axis="y", labelsize=P.FONT - 12)
         stub.set_xticklabels(labels, fontsize=P.FONT - 8)
         ax.spines["bottom"].set_visible(False)
         stub.spines["top"].set_visible(False)
@@ -622,6 +631,7 @@ networks amplify it."""),
     code('''# The layer-depth correlations quoted in the text: python3 run_layer_depth.py
 N_LAYERS = E.N_CNN_LAYERS
 NETWORKS = {"SceneFaceDet": "cnn_scenefacedet.npz", "UntrainedCNN": "cnn_untrained.npz"}
+NET_LABEL = {"SceneFaceDet": "SceneFaceDet", "UntrainedCNN": "Untrained"}
 
 for task, fname in (("facedetection", "suppfig5a_layers_face_detection.png"),
                     ("movingwindow", "suppfig5b_layers_moving_window.png")):
@@ -630,13 +640,13 @@ for task, fname in (("facedetection", "suppfig5a_layers_face_detection.png"),
     for net, npz in NETWORKS.items():
         r = E.layer_predictivity(task, npz)
         for cond in cfg.CONDITIONS:
-            rows += [dict(network=net, condition=cond, layer=k + 1, r2=v)
+            rows += [dict(network=NET_LABEL[net], condition=cond, layer=k + 1, r2=v)
                      for k, v in enumerate(r[cond])]
             ax.plot(range(1, N_LAYERS + 1), r[cond],
                     color=P.condition_colours()[cond],
                     linestyle="-" if net == "SceneFaceDet" else ":",
                     marker="o", lw=2.5, ms=6,
-                    label=f"{net}, {cfg.COND_LABEL[cond].lower()}")
+                    label=f"{NET_LABEL[net]} {cfg.COND_LABEL[cond]}")
     # Fixed range so the two panels match; fail loudly rather than clip a value.
     vals = [row["r2"] for row in rows]
     assert 0 <= min(vals) and max(vals) <= 0.6, (min(vals), max(vals))
