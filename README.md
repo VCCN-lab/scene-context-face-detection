@@ -43,7 +43,7 @@ every package version.
 ```bash
 uv sync
 cd code
-uv run python fetch_data.py                     # once; skipped if data/ exists
+uv run python fetch_data.py                     # once; skipped if data/ holds files
 uv run python run_behavioural_analyses.py       # seconds
 uv run python run_onset_gaze_control.py         # seconds
 uv run python run_reliability.py                # ~1 minute

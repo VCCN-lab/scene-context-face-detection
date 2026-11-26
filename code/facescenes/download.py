@@ -22,7 +22,8 @@ def fetch(url=None, known_hash=None, dest=None, cache=None):
     `url` and `known_hash` default to cfg.ZENODO_URL and cfg.ZENODO_HASH,
     `dest` to the repository root and `cache` to the user cache folder. The
     archive is kept in `cache`, so a second call does not download it again.
-    An existing dest/data is left unchanged.
+    A dest/data that holds files is left unchanged; an empty one, such as a
+    mount point, is filled.
     """
     url = cfg.ZENODO_URL if url is None else url
     known_hash = cfg.ZENODO_HASH if known_hash is None else known_hash
@@ -32,9 +33,9 @@ def fetch(url=None, known_hash=None, dest=None, cache=None):
                            "(config.ZENODO_URL); set FACESCENES_DATA to a "
                            "local copy of the dataset instead")
     data = dest / "data"
-    if data.exists():
-        warnings.warn(f"{data} already exists and is left unchanged; remove "
-                      "it to unpack the release again")
+    if data.exists() and any(data.iterdir()):
+        warnings.warn(f"{data} already holds files and is left unchanged; "
+                      "remove it to unpack the release again")
         return data
     cache = pooch.os_cache("facescenes") if cache is None else Path(cache)
     archive = pooch.retrieve(url, known_hash, path=cache, progressbar=False)

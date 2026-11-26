@@ -3,7 +3,8 @@
 Download the released dataset from Zenodo and unpack it into data/.
 
 The archive and its checksum are pinned in config.ZENODO_URL and
-config.ZENODO_HASH. An existing data/ folder is left unchanged.
+config.ZENODO_HASH. A data/ folder that holds files is left unchanged; an
+empty one, such as a mount point, is filled.
 
 Run: python3 fetch_data.py
 """
