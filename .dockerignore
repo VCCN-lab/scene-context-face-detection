@@ -1,0 +1,11 @@
+# The dataset (including the scene photographs, whose copyright stays with
+# their owners) and rerun results are never part of the image.
+data
+derivatives
+*.sif
+
+.git
+.venv
+.pytest_cache
+**/__pycache__
+**/.ipynb_checkpoints

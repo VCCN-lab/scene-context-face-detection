@@ -1,0 +1,39 @@
+name: tests and linting
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.10.9"
+          enable-cache: true
+      - name: Spelling (codespell, configured in .codespellrc)
+        run: uv run --frozen codespell
+      - name: PEP8 (flake8, configured in .flake8)
+        run: uv run --frozen flake8
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.10.9"
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+      - name: Tests (pytest; the network test marked zenodo is deselected)
+        run: uv run --frozen pytest

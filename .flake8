@@ -1,0 +1,27 @@
+[flake8]
+exclude = .git,.venv,data,derivatives,figures,notebooks
+# Files from the release, checked as released; every other file follows the
+# default PEP8 limits.
+per-file-ignores =
+    code/build_notebooks.py: E501
+    code/export_bids.py: E501
+    code/facescenes/behaviour.py: E501,F401
+    code/facescenes/config.py: E501
+    code/facescenes/data.py: E501
+    code/facescenes/encoding.py: E501
+    code/facescenes/onset_gaze.py: E501
+    code/facescenes/plotting.py: E501
+    code/facescenes/stats.py: E501,E731,F401
+    code/run_behavioural_analyses.py: E501
+    code/run_contrast_test.py: E501
+    code/run_encoding_analyses.py: E501
+    code/run_layer_depth.py: E501
+    code/run_masked_face_analyses.py: E501
+    code/run_onset_gaze_control.py: E501
+    code/run_reliability.py: E501
+    code/run_statistics_tables.py: E501,E702
+    tests/conftest.py: E501
+    tests/test_behaviour.py: E501
+    tests/test_encoding.py: E501
+    tests/test_release.py: E127,E501
+    tests/test_stats.py: E501,E702

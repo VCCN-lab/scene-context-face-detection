@@ -15,3 +15,6 @@ data/stimuli/*_face.png
 
 # progress log, not an output
 derivatives/contrast_test.rtf
+
+# Built Apptainer images
+*.sif

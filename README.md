@@ -75,8 +75,14 @@ set `SHOW_TITLES = True` in `facescenes/plotting.py` to label them by task.
 ## Tests
 
 ```bash
-uv run pytest                   # about 30 seconds
+uv run pytest                   # about 1.5 minutes
+uv run pytest -m zenodo         # downloads the published dataset
+uv run codespell                # spelling, configured in .codespellrc
+uv run flake8                   # PEP8, configured in .flake8
 ```
+
+The same checks run on GitHub for every pull request
+(`.github/workflows/ci.yml`), the tests on Python 3.10 and 3.12.
 
 `test_stats.py`, `test_encoding.py` and `test_behaviour.py` are unit tests on
 synthetic data with known answers: permutation p-values, the paired and
@@ -89,6 +95,34 @@ that the cached predictivity is reproduced from the current data, that the
 hard-coded reliabilities match a fresh estimate, that the Supplementary Tables
 and the figures' source data agree with the caches, and that the headline
 statistics of the paper come out unchanged.
+
+## Containers
+
+`Dockerfile` and `Singularity.def` build the same environment: the code, the
+notebooks and the Python packages locked in `uv.lock`, on
+`python:3.12-slim-bookworm`. Both are generated from one specification by
+`bash generate_images.sh`, which runs
+[Neurodocker](https://github.com/ReproNim/neurodocker) through uvx; edit the
+script, not the recipes. The dataset is not part of either image. The
+Docker image is published to `ghcr.io/vccn-lab/scene-context-face-detection`
+for the main branch and for version tags (`.github/workflows/container.yml`).
+
+```bash
+# Docker: JupyterLab on port 8888, with a local copy of the dataset mounted
+docker run -p 8888:8888 -v "$PWD/data":/opt/facescenes/data:ro \
+    ghcr.io/vccn-lab/scene-context-face-detection:main
+
+# Apptainer: the image is read only, so bind a clone of this repository
+# (with data/ in it) over /opt/facescenes to write results
+apptainer build facescenes.sif Singularity.def
+apptainer exec --bind "$PWD":/opt/facescenes facescenes.sif \
+    python /opt/facescenes/code/run_behavioural_analyses.py
+```
+
+Both images start JupyterLab. To run something else in the Docker image, pass
+`--entrypoint`, e.g. `--entrypoint python ... code/run_reliability.py`. Without
+the mount, `python code/fetch_data.py` in a JupyterLab terminal downloads the
+dataset into the running container.
 
 ## The two experiments
 
