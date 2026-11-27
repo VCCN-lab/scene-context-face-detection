@@ -52,6 +52,11 @@ it validates as a BIDS dataset on its own.
 that trial, not to the start of the run: the raw files record only per-trial
 timings. This is stated in the event sidecars.
 
+The event tables hold one row per fixation, derived from the fixation
+records of the presentation software. The continuous gaze samples are not
+part of this release, so the data are stored as behavioural data (`beh/`)
+and not in the BIDS eye-tracking (`physio`) format.
+
 The scene photographs are not included. They are adapted from the Places365
 dataset, whose image copyright stays with the original owners, and are
 available from the OSF project (https://doi.org/10.17605/OSF.IO/5AYX8). The
