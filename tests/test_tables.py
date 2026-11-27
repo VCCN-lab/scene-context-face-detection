@@ -8,6 +8,7 @@ import run_statistics_tables as ST
 
 
 def test_write_table_writes_bids_tsv(tmp_path, monkeypatch):
+    """write_table writes a tab-separated .tsv with "n/a" for NaN."""
     monkeypatch.setattr(cfg, "OUTPUT", tmp_path)
     table = pd.DataFrame(dict(task=["facedetection"], p=[np.nan],
                               r2=[0.12345678912345]))
@@ -19,6 +20,7 @@ def test_write_table_writes_bids_tsv(tmp_path, monkeypatch):
 
 
 def test_write_table_round_trips(tmp_path, monkeypatch):
+    """A written table reads back unchanged."""
     monkeypatch.setattr(cfg, "OUTPUT", tmp_path)
     table = pd.DataFrame(dict(feature=["Face expect.", "Pixel"],
                               p=[0.0002, np.nan], df1=[1, 1]))

@@ -27,6 +27,8 @@ NETWORKS = (("Untrained", "cnn_untrained.npz"),
 
 
 def main():
+    """Print the Spearman correlation of CNN predictivity with layer index
+    per network, task and condition."""
     layers = np.arange(1, E.N_CNN_LAYERS + 1)
     for task in cfg.TASKS:
         print(cfg.TASK_LABEL[task])

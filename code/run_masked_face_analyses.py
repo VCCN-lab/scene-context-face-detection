@@ -47,6 +47,8 @@ NETWORK_LABEL = {"UntrainedCNN": "Untrained", "SceneFaceDet": "SceneFaceDet"}
 
 
 def run(task):
+    """Print the visible-versus-masked CNN comparison of `task` and return
+    one result row per network and ANOVA effect."""
     Z, y, keep, splits = E.design(task)
     n_img = len(keep)
     masked = E.masked_features(task)
@@ -112,6 +114,7 @@ def run(task):
 
 
 def main():
+    """Run the masked-face comparison for every task."""
     for task in cfg.TASKS:
         run(task)
 

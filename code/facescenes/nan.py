@@ -14,6 +14,7 @@ import numpy as np
 
 
 def _quiet(fn, a, axis=0, **kw):
+    """Apply `fn` along `axis`, silencing empty- and all-NaN-slice warnings."""
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", r"(Mean|Degrees) of empty slice|"
                                           r"Degrees of freedom <= 0",
@@ -24,8 +25,11 @@ def _quiet(fn, a, axis=0, **kw):
 
 
 def mean(a, axis=0):
+    """NaN-ignoring mean along `axis`, without empty-slice warnings."""
     return _quiet(np.nanmean, a, axis)
 
 
 def std(a, axis=0, ddof=1):
+    """NaN-ignoring standard deviation along `axis`, without empty-slice
+    warnings."""
     return _quiet(np.nanstd, a, axis, ddof=ddof)

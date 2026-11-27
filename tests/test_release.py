@@ -28,11 +28,14 @@ N_IMAGES = {"facedetection": 108, "movingwindow": 120}
 
 
 def cache(task):
+    """The released encoding cache of `task` as a dict of arrays."""
     return dict(np.load(CACHE / f"{task}_encoding.npz"))
 
 
 # ------------------------------------------------------------- the dataset
 def test_participants():
+    """76 unique participants, sub-001 to sub-038 and sub-039 to sub-076
+    per task after exclusions."""
     p = D.participants()
     assert len(p) == 76 and p["participant_id"].is_unique
     assert D.participant_ids("facedetection") == [f"sub-{i:03d}" for i in range(1, 39)]
@@ -40,6 +43,7 @@ def test_participants():
 
 
 def test_stimulus_order():
+    """The 120 stimuli are unique and in the canonical order."""
     names = D.stimulus_names()
     assert len(names) == 120 and len(set(names)) == 120
     assert all("Conferanceroom" in names[i] for i in range(40, 50))
@@ -48,6 +52,8 @@ def test_stimulus_order():
 
 @pytest.mark.parametrize("task", cfg.TASKS)
 def test_event_invariants(task):
+    """Known conditions, each image once per participant, and one detection
+    fixation ending every successful trial."""
     for pid in D.participant_ids(task):
         ev = D.events(pid, task)
         assert set(ev["trial_type"]) <= set(cfg.CONDITIONS)
@@ -62,6 +68,8 @@ def test_event_invariants(task):
 
 @pytest.mark.parametrize("task", cfg.TASKS)
 def test_trials(task):
+    """38 participants, one trial per image, latencies inside the display
+    window, and no excluded stimuli."""
     t = D.trials(task)
     assert t["participant"].nunique() == 38
     assert not t.duplicated(["participant", "image"]).any()
@@ -73,6 +81,7 @@ def test_trials(task):
 
 @pytest.mark.parametrize("task", cfg.TASKS)
 def test_analysable_images(task):
+    """The analysable images number as expected and all have log means."""
     keep = D.analysable_images(task)
     assert len(keep) == N_IMAGES[task]
     m = D.image_means(task, log=True)
@@ -80,6 +89,8 @@ def test_analysable_images(task):
 
 
 def test_features():
+    """The predictors are finite, and the design is z-scored with the
+    expected latency shape and fold count."""
     X = E._raw_features()
     assert X.shape == (120, len(cfg.FEATURE_NAMES))
     assert np.isfinite(X).all()
@@ -93,6 +104,7 @@ def test_features():
 @pytest.mark.parametrize("task,t,p,dz", [("facedetection", -4.14, 1.95e-4, -0.67),
                                           ("movingwindow", -7.96, 1.55e-9, -1.29)])
 def test_detection_latency(task, t, p, dz):
+    """The detection-latency test reproduces the reported t, p and dz."""
     r = B.detection_latency(task)
     assert r["n"] == 38
     assert r["t"] == pytest.approx(t, abs=.005)
@@ -101,6 +113,7 @@ def test_detection_latency(task, t, p, dz):
 
 
 def test_figure1b_means():
+    """The Figure 1b condition means reproduce the reported values."""
     a, b = B.participant_means(B.trial_table("facedetection"), "latency_ms")
     assert a.mean() == pytest.approx(208.77, abs=.01)
     assert b.mean() == pytest.approx(221.70, abs=.01)
@@ -133,6 +146,7 @@ def test_cache_reproduces_observed_predictivity(task):
 
 @pytest.mark.parametrize("task", cfg.TASKS)
 def test_cache_has_no_p_for_untested_features(task):
+    """p-values are NaN exactly where estimates are, and in (0, 1] else."""
     res = cache(task)
     for kind in ("single", "unique"):
         for c in cfg.CONDITIONS:
@@ -143,6 +157,8 @@ def test_cache_has_no_p_for_untested_features(task):
 
 @pytest.mark.parametrize("kind", ["single", "unique"])
 def test_tables_match_cache(kind):
+    """Predictivity tables hold the cached r2, p and Bonferroni p, with
+    ordered CIs."""
     tab = pd.read_csv(TABLES / f"encoding_{kind}.tsv", sep="\t")
     for task in cfg.TASKS:
         res = cache(task)
@@ -166,6 +182,7 @@ def test_tables_match_cache(kind):
     ("fig3c_unique_face_detection", "facedetection", "unique"),
     ("fig3d_unique_moving_window", "movingwindow", "unique")])
 def test_figure3_source_data_match_cache(panel, task, kind):
+    """Figure 3 source data hold the cached features, r2 and p-values."""
     src = pd.read_csv(SOURCE / f"{panel}.tsv", sep="\t")
     res = cache(task)
     ok = ~np.isnan(res[f"{kind}_preview"])
@@ -176,12 +193,15 @@ def test_figure3_source_data_match_cache(panel, task, kind):
 
 
 def test_source_data_complete():
+    """Every figure has a PNG, a PDF and a source-data TSV."""
     figs = {p.stem for p in cfg.FIGURES.glob("*.png")}
     assert figs == {p.stem for p in SOURCE.glob("*.tsv")}
     assert figs == {p.stem for p in cfg.FIGURES.glob("*.pdf")}
 
 
 def test_figure1_source_data_has_all_participants():
+    """Figure 1b source data hold all 38 participants and the reported
+    preview mean."""
     src = pd.read_csv(SOURCE / "fig1b_latency_face_detection.tsv", sep="\t")
     assert len(src) == 38 and src["participant"].is_unique
     assert src["preview_mean_latency_ms"].mean() == pytest.approx(208.77, abs=.01)
@@ -189,11 +209,13 @@ def test_figure1_source_data_has_all_participants():
 
 # ------------------------------------------------- rerun against release
 def fresh_id(path):
+    """Test ID of a fresh result: its path relative to cfg.OUTPUT."""
     return str(path.relative_to(cfg.OUTPUT))
 
 
 @pytest.mark.parametrize("path", FRESH, ids=fresh_id)
 def test_fresh_result_matches_release(path):
+    """A rerun's TSV or npz result matches the released file."""
     released = cfg.DERIVATIVES / path.relative_to(cfg.OUTPUT)
     assert released.is_file(), released
     if path.suffix == ".tsv":

@@ -39,6 +39,7 @@ def participants():
 
 
 def participant_ids(task, apply_exclusions=True):
+    """Sorted participant IDs of `task`, by default without exclusions."""
     p = participants()
     ids = sorted(p.loc[p["task"] == task, "participant_id"])
     if apply_exclusions:

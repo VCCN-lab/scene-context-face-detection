@@ -13,6 +13,7 @@ from facescenes import download
 
 
 def main():
+    """Fetch the dataset and print where it was unpacked."""
     print(f"dataset at {download.fetch()}")
 
 

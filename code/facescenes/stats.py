@@ -222,6 +222,7 @@ def eta2p_ci(F, df1, df2, level=0.90):
     alpha = (1 - level) / 2
 
     def bound(q):
+        """Noncentrality at which the observed F is the q-th quantile."""
         # lambda at which the observed F sits at the q-th quantile
         f = lambda lam: stats.ncf.cdf(F, df1, df2, lam) - q
         if f(0) < 0:                 # observed F below the central quantile

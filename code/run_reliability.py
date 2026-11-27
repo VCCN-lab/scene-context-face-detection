@@ -41,6 +41,7 @@ from facescenes import stats as S
 
 
 def main():
+    """Print the split-half reliabilities and R^2 ceiling of every task."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--splits", type=int, default=2000)
     a = ap.parse_args()

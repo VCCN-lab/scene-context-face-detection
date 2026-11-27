@@ -36,6 +36,7 @@ SHOW_TITLES = False
 
 
 def use_style(dpi=300):
+    """Set the figure resolution, tight bounding boxes and embedded fonts."""
     plt.rcParams["figure.dpi"] = dpi
     plt.rcParams["savefig.bbox"] = "tight"
     # Embed TrueType fonts in the PDFs, so text stays editable in Illustrator.
@@ -54,6 +55,7 @@ def title(target, text, **kw):
 
 
 def clean(ax):
+    """Hide the top and right spines of `ax` and return it."""
     ax.spines["right"].set_visible(False)
     ax.spines["top"].set_visible(False)
     return ax
@@ -93,6 +95,7 @@ def break_marker(ax, stub=None, y=0.03, d=0.018):
 
 
 def significance(p):
+    """Asterisk label for p-value `p`: ***, **, * or n.s."""
     return "***" if p < .001 else "**" if p < .01 else "*" if p < .05 else "n.s."
 
 
@@ -108,6 +111,7 @@ def one_sided_errorbar(values, sd):
 
 
 def condition_colours():
+    """Plot colour of each condition, keyed by condition name."""
     return {"preview": cfg.C_PREVIEW, "no_preview": cfg.C_NO_PREVIEW}
 
 

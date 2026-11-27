@@ -15,6 +15,7 @@ from facescenes import config as cfg
 
 
 def show(name, r, unit="", log=True):
+    """Print the condition means, difference, CI and paired test in `r`."""
     print(f"  {name}")
     print(f"     raw means       preview {r['mean_a']:9.3f} +/- {r['sem_a']:.3f} {unit}"
           f"   no preview {r['mean_b']:9.3f} +/- {r['sem_b']:.3f} {unit}")
@@ -32,6 +33,7 @@ def show(name, r, unit="", log=True):
 
 
 def main():
+    """Print the behavioural results of every task."""
     for task in cfg.TASKS:
         df = B.trial_table(task)
         n_sub = df["participant"].nunique()

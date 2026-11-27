@@ -54,6 +54,8 @@ STATISTICS = [("contrast vs mean of others", "greater"),
 
 
 def deltas(Z, y, splits, uniq, rel_preview, rel_no_preview):
+    """Noise-corrected preview-minus-no-preview change in mean single and
+    unique predictivity, one value per feature."""
     s0, u0 = E.fold_scores(Z, y[0], splits, uniq)
     s1, u1 = E.fold_scores(Z, y[1], splits, uniq)
     return (s0.mean(0) / rel_preview - s1.mean(0) / rel_no_preview,
@@ -61,11 +63,14 @@ def deltas(Z, y, splits, uniq, rel_preview, rel_no_preview):
 
 
 def statistics(d, ref, others):
+    """The four STATISTICS of delta `d` for reference feature `ref`."""
     v = d[others]
     return np.array([d[ref] - v.mean(), d[ref] - v.max(), d[ref], v.mean()])
 
 
 def run(task, n_perm):
+    """Permutation-test the contrast statistics of `task`, print them and
+    cache the observed values and p-values in derivatives/encoding/."""
     Z, y, keep, splits = E.design(task)
     n_img = len(keep)
     uniq = E.unique_columns()
@@ -122,6 +127,7 @@ def run(task, n_perm):
 
 
 def main():
+    """Run the contrast test for every task with the requested permutations."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--permutations", type=int, default=5000)
     a = ap.parse_args()

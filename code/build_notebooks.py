@@ -42,15 +42,18 @@ for t in cfg.TASKS:
 
 
 def md(text):
+    """A markdown notebook cell holding `text`."""
     return {"cell_type": "markdown", "metadata": {}, "source": text.splitlines(True)}
 
 
 def code(text):
+    """An unexecuted code notebook cell holding `text`."""
     return {"cell_type": "code", "execution_count": None, "metadata": {},
             "outputs": [], "source": text.splitlines(True)}
 
 
 def notebook(cells):
+    """An nbformat 4 notebook dict with a Python 3 kernel and `cells`."""
     return {"cells": cells, "metadata": {
         "kernelspec": {"display_name": "Python 3", "language": "python",
                        "name": "python3"},
@@ -941,6 +944,7 @@ for covs, label in (((), "unadjusted"),
 
 
 def main():
+    """Write every figure notebook to the notebooks directory."""
     OUT.mkdir(parents=True, exist_ok=True)
     for name, cells in (("figure1_behaviour.ipynb", FIG1),
                         ("figure3_encoding.ipynb", FIG3),

@@ -63,6 +63,7 @@ def write_table(df, name):
 
 
 def feature_correlations():
+    """Spearman correlation, 95% CI and p of every pair of predictors."""
     X = E._raw_features()                       # all 120 images, as in Fig. 2e
     n = X.shape[0]
     rho = stats.spearmanr(X)
@@ -94,6 +95,8 @@ def bootstrap_splits(idx, rng, n_repeats=cfg.N_REPEATS):
 
 
 def bootstrap(task, n_boot):
+    """Noise-corrected predictivity and contrast terms of `task` in each of
+    `n_boot` image bootstrap resamples."""
     Z, y, keep, _ = E.design(task)
     n = len(keep)
     uniq = E.unique_columns()
@@ -124,11 +127,14 @@ def bootstrap(task, n_boot):
 
 
 def ci(a):
+    """2.5th and 97.5th NaN-ignoring percentiles of `a` along axis 0."""
     lo, hi = np.nanpercentile(a, [2.5, 97.5], axis=0)
     return lo, hi
 
 
 def encoding_tables(task, boot):
+    """Single-feature and unique predictivity tables of `task`, combining
+    the cached results with the bootstrap CIs in `boot`."""
     res = dict(np.load(D.results_path("encoding", f"{task}_encoding.npz")))
     n_img = len(res["images"])
     tables = {}
@@ -158,6 +164,8 @@ def encoding_tables(task, boot):
 
 
 def contrast_table(task, boot):
+    """Planned-contrast table of `task`: cached estimates and one-sided p,
+    with the bootstrap CIs in `boot`."""
     c = np.load(D.results_path("encoding", f"{task}_contrast.npz"))
     labels = list(c["statistics"])
     pick = {"face expectation delta > 0": (0, "Face expectation: preview - no preview"),
@@ -176,6 +184,7 @@ def contrast_table(task, boot):
 
 
 def main():
+    """Compute, write and print every supplementary statistics table."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--bootstrap", type=int, default=1000)
     a = ap.parse_args()

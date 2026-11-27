@@ -22,11 +22,13 @@ FILES = {"data/dataset_description.json": '{"Name": "test"}\n',
 
 
 def md5(path):
+    """The md5 checksum of `path`, prefixed with "md5:"."""
     return "md5:" + hashlib.md5(path.read_bytes()).hexdigest()
 
 
 @pytest.fixture
 def archive(tmp_path):
+    """A zip archive of FILES in its own folder under `tmp_path`."""
     folder = tmp_path / "served"
     folder.mkdir()
     path = folder / "data.zip"
@@ -38,6 +40,7 @@ def archive(tmp_path):
 
 @pytest.fixture
 def url(archive):
+    """URL of `archive` served by a local HTTP server for the test."""
     handler = functools.partial(http.server.SimpleHTTPRequestHandler,
                                 directory=str(archive.parent))
     server = http.server.ThreadingHTTPServer(("127.0.0.1", 0), handler)
@@ -49,6 +52,7 @@ def url(archive):
 
 
 def test_fetch_unpacks_the_dataset(tmp_path, archive, url):
+    """fetch unpacks the archive and returns the data folder."""
     dest = tmp_path / "repo"
     data = DL.fetch(url, md5(archive), dest=dest, cache=tmp_path / "cache")
     assert data == dest / "data"
@@ -57,12 +61,14 @@ def test_fetch_unpacks_the_dataset(tmp_path, archive, url):
 
 
 def test_fetch_keeps_the_archive_in_the_cache(tmp_path, archive, url):
+    """fetch leaves the downloaded zip archive in the cache."""
     cache = tmp_path / "cache"
     DL.fetch(url, md5(archive), dest=tmp_path / "repo", cache=cache)
     assert [p.name for p in cache.iterdir() if p.suffix == ".zip"]
 
 
 def test_fetch_rejects_a_wrong_checksum(tmp_path, url):
+    """A checksum mismatch raises ValueError and unpacks nothing."""
     dest = tmp_path / "repo"
     with pytest.raises(ValueError):
         DL.fetch(url, "md5:" + "0" * 32, dest=dest, cache=tmp_path / "cache")
@@ -80,6 +86,7 @@ def test_fetch_fills_an_empty_data_folder(tmp_path, archive, url):
 
 
 def test_fetch_leaves_existing_data_untouched(tmp_path, archive, url):
+    """A data folder that holds files is kept unchanged, with a warning."""
     dest = tmp_path / "repo"
     (dest / "data").mkdir(parents=True)
     (dest / "data" / "mine.txt").write_text("keep")
@@ -91,6 +98,7 @@ def test_fetch_leaves_existing_data_untouched(tmp_path, archive, url):
 
 
 def test_fetch_needs_a_published_record(tmp_path, monkeypatch):
+    """Without a configured Zenodo URL fetch raises RuntimeError."""
     monkeypatch.setattr(cfg, "ZENODO_URL", None)
     with pytest.raises(RuntimeError):
         DL.fetch(dest=tmp_path / "repo", cache=tmp_path / "cache")
@@ -98,6 +106,7 @@ def test_fetch_needs_a_published_record(tmp_path, monkeypatch):
 
 @pytest.mark.zenodo
 def test_fetch_published_record(tmp_path):
+    """The published Zenodo record unpacks into a BIDS dataset."""
     data = DL.fetch(dest=tmp_path / "repo", cache=tmp_path / "cache")
     assert (data / "dataset_description.json").is_file()
     assert (data / "derivatives" / "encoding").is_dir()

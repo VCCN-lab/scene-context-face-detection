@@ -68,6 +68,7 @@ def report(task, df, label, models=MODELS):
 
 
 def main():
+    """Print the onset-gaze control and its robustness checks per task."""
     for task in cfg.TASKS:
         df = G.onset_gaze_table(task)
         dropped = len(D.trials(task)) - len(df)

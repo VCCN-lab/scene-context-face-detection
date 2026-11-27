@@ -21,6 +21,7 @@ def _events():
     Trial 2: a timeout, which must be dropped.
     """
     def row(trial, onset, x, y, ttype, stim, timeout=0, phase="search"):
+        """One fixation event of the synthetic participant, as a dict."""
         return dict(trial=trial, onset=onset, duration=.2, phase=phase,
                     trial_type=ttype, stimulus=stim,
                     gaze_x=x, gaze_y=y, timeout=timeout)
@@ -36,6 +37,7 @@ def _events():
 
 @pytest.fixture
 def fake_data(monkeypatch):
+    """Serve one participant, three stimuli and the _events() trials to D."""
     monkeypatch.setattr(D, "participant_ids", lambda task, apply_exclusions=True: ["sub-x"])
     monkeypatch.setattr(D, "stimulus_names", lambda: ("a.jpg", "b.jpg", "c.jpg"))
     monkeypatch.setattr(D, "events", lambda pid, task: _events())
@@ -43,6 +45,8 @@ def fake_data(monkeypatch):
 
 
 def test_trials_definition(fake_data):
+    """A trial keeps its image, condition, last-fixation latency, fixation
+    count and path length, and timeouts are dropped."""
     t = D.trials("facedetection")
     assert len(t) == 1                             # timeout dropped
     r = t.iloc[0]
@@ -54,12 +58,14 @@ def test_trials_definition(fake_data):
 
 
 def test_trials_exclusion(fake_data, monkeypatch):
+    """Excluded stimuli are dropped unless exclusions are switched off."""
     monkeypatch.setitem(cfg.EXCLUDE_STIMULI, "facedetection", [1])
     assert D.trials("facedetection").empty
     assert len(D.trials("facedetection", apply_exclusions=False)) == 1
 
 
 def test_latency_array(fake_data):
+    """Latencies fill a participant x condition x image array, else NaN."""
     a = D.latency_array("facedetection")
     assert a.shape == (1, 2, 3)
     assert a[0, 0, 1] == pytest.approx(.7)
@@ -68,6 +74,7 @@ def test_latency_array(fake_data):
 
 # ------------------------------------------------------- participant pooling
 def _table():
+    """Synthetic trial values for two participants in both conditions."""
     return pd.DataFrame(dict(
         participant=["s1"] * 4 + ["s2"] * 3,
         trial_type=["preview", "preview", "no_preview", "no_preview",
@@ -76,17 +83,20 @@ def _table():
 
 
 def test_participant_means():
+    """Participant means are computed per condition."""
     a, b = B.participant_means(_table(), "v")
     assert np.allclose(a, [2.5, 3.0]) and np.allclose(b, [5.0, 6.0])
 
 
 def test_participant_means_log_is_mean_of_logs():
+    """With log=True the participant mean is the mean of the logs."""
     a, b = B.participant_means(_table(), "v", log=True)
     assert np.allclose(np.exp(a), [2.0, 3.0])      # geometric mean of 1 and 4
     assert np.allclose(np.exp(b), [4.0, np.sqrt(35)])
 
 
 def test_participant_means_log_drops_non_positive():
+    """With log=True non-positive values are left out of the mean."""
     df = _table()
     df.loc[0, "v"] = 0.0
     a, _ = B.participant_means(df, "v", log=True)
@@ -94,6 +104,7 @@ def test_participant_means_log_drops_non_positive():
 
 
 def test_participant_table_missing_condition():
+    """A condition without trials still appears as an all-NaN column."""
     df = _table()
     df = df[df["trial_type"] == "preview"]
     t = B.participant_table(df, "v")
@@ -102,17 +113,21 @@ def test_participant_table_missing_condition():
 
 
 def test_participant_means_median():
+    """agg="median" gives the participant median per condition."""
     a, _ = B.participant_means(_table(), "v", agg="median")
     assert np.allclose(a, [2.5, 3.0])
 
 
 # -------------------------------------------------------------- onset gaze
 def test_image_coords_centre():
+    """The screen centre maps to the image centre."""
     x, y = G._to_image_coords(cfg.DISPLAY["width_px"] / 2, cfg.DISPLAY["height_px"] / 2)
     assert (x, y) == (cfg.DISPLAY["image_width_px"] / 2, cfg.DISPLAY["image_height_px"] / 2)
 
 
 def test_within_participant_ols_recovers_effect():
+    """Per-participant OLS recovers the preview effect and distance slope,
+    and skips participants with fewer than min_trials trials."""
     rng = np.random.default_rng(0)
     rows = []
     for s in range(5):
@@ -131,17 +146,20 @@ def test_within_participant_ols_recovers_effect():
 
 # --------------------------------------------------------------- plotting
 def test_significance_levels():
+    """p-values map to ***, **, * and n.s. at .001, .01 and .05."""
     assert [P.significance(p) for p in (.0005, .005, .02, .05, .5)] == \
         ["***", "**", "*", "n.s.", "n.s."]
 
 
 def test_one_sided_errorbar():
+    """Error bars extend away from zero on one side only."""
     lower, upper = P.one_sided_errorbar([.3, -.2, 0], [.1, .05, .02])
     assert np.allclose(lower, [0, .05, 0]) and np.allclose(upper, [.1, 0, .02])
 
 
 @pytest.mark.parametrize("lo,hi", [(-.07, .45), (0, .2), (.1, .9), (-.3, -.1)])
 def test_zero_anchored_ticks(lo, hi):
+    """Ticks include zero, cover the range and are evenly spaced."""
     ticks, (t0, t1) = P.zero_anchored_ticks(lo, hi)
     assert np.any(np.isclose(ticks, 0))
     assert t0 <= min(lo, 0) and t1 >= hi
@@ -149,6 +167,7 @@ def test_zero_anchored_ticks(lo, hi):
 
 
 def test_title_is_off_by_default():
+    """No axes title or suptitle is drawn while SHOW_TITLES is off."""
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
     P.title(ax, "Task")
@@ -158,6 +177,7 @@ def test_title_is_off_by_default():
 
 
 def test_save_writes_rgb_png_pdf_and_tsv(tmp_path, monkeypatch):
+    """save writes an RGB PNG, a PDF and a BIDS TSV of the source data."""
     import matplotlib.pyplot as plt
     from PIL import Image
     monkeypatch.setattr(cfg, "FIGURES", tmp_path / "fig")

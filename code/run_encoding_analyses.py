@@ -43,6 +43,9 @@ from facescenes import stats as S
 
 
 def analyse(task, n_perm, force=False):
+    """Predictivity, permutation p-values and betas of `task`, read from the
+    cache unless `force`; recomputed results are written to
+    derivatives/encoding/."""
     name = f"{task}_encoding.npz"
     cached = D.results_path("encoding", name)
     if cached.exists() and not force:
@@ -123,6 +126,7 @@ def analyse(task, n_perm, force=False):
 
 
 def report(task, res):
+    """Print the single-feature and unique predictivity table of `task`."""
     names = cfg.FEATURE_LABELS
     n_test = len(names) * 2
     print("=" * 110)
@@ -150,6 +154,7 @@ def report(task, res):
 
 
 def main():
+    """Analyse and report every task with the requested permutations."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--permutations", type=int, default=5000,
                     help="at 500 the Monte Carlo SE near p = .05 is about .01, "

@@ -71,6 +71,7 @@ def make_splits(n_images, rng, n_repeats=cfg.N_REPEATS):
 # --------------------------------------------------------------- predictors
 @functools.lru_cache(maxsize=None)
 def _raw_features():
+    """(n_image, 10) matrix of all predictors, read from the feature files."""
     F = cfg.FEATURES
     face_expect = np.load(F / "face_expectation.npy")
     pixel = np.load(F / "pixel_difference.npy")
@@ -114,6 +115,7 @@ def design(task):
 
 # -------------------------------------------------------------------- models
 def unique_columns():
+    """Indices of the features that enter the unique-predictivity model."""
     return [i for i, n in enumerate(cfg.FEATURE_NAMES)
             if n not in cfg.EXCLUDE_FROM_UNIQUE]
 
