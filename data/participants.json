@@ -8,30 +8,5 @@
       "facedetection": "Whole scene visible; search until the face is fixated.",
       "movingwindow": "Gaze-contingent aperture; only the region around fixation is visible."
     }
-  },
-  "age": {
-    "Description": "Age in years at testing.",
-    "Units": "years"
-  },
-  "sex": {
-    "Description": "Self-reported sex.",
-    "Levels": {
-      "f": "female",
-      "m": "male"
-    }
-  },
-  "handedness": {
-    "Description": "Self-reported handedness.",
-    "Levels": {
-      "r": "right",
-      "l": "left"
-    }
-  },
-  "corrected_vision": {
-    "Description": "Answer to the question \"Any form of corrective lenses?\", typed at the start of the session.",
-    "Levels": {
-      "no": "No corrective lenses.",
-      "yes": "Corrective lenses (glasses or contact lenses)."
-    }
   }
 }

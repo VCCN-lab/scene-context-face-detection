@@ -19,7 +19,7 @@ the face. The participant groups were separate.
   aperture around fixation is visible; 20 s limit.
 
 On half the trials the scene appeared briefly as a preview before the search
-display; on the other half a grey placeholder appeared instead. Which images
+display; on the other half a grey placeholder appeared before it. Which images
 were previewed was counterbalanced between two participant groups.
 
 Display: 3840 x 2160 pixels, 600 x 340 mm, 60 Hz, viewed from 460 mm (51.383
@@ -30,6 +30,7 @@ Eye tracker: EyeLink 1000, monocular.
 
 ```
 dataset_description.json, participants.tsv/.json
+participants_summary.tsv/.json demographics per task (aggregated)
 task-<task>_events.json        column descriptions of the event tables
 sub-<label>/beh/               one event table per participant, one row per fixation
 stimulus_order.tsv             image index, scene, no-face version and face mask
@@ -56,7 +57,14 @@ dataset, whose image copyright stays with the original owners, and are
 available from the OSF project (https://doi.org/10.17605/OSF.IO/5AYX8). The
 `stimulus` column of the event tables names them.
 
-Participants are pseudonymised.
+Participants are pseudonymised. `participants.tsv` lists each participant's
+ID and task; age, sex, handedness and corrective lenses are released only
+per task, in `participants_summary.tsv`:
+
+| task | n | age mean (SD) | age range | female / male | right / left-handed | corrective lenses |
+|---|---|---|---|---|---|---|
+| face detection | 38 | 26.2 (4.1) | 20-39 | 26 / 12 | 35 / 3 | 1 |
+| moving window | 38 | 25.1 (3.6) | 19-33 | 30 / 8 | 31 / 7 | 4 |
 
 ## Licence
 

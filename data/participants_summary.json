@@ -1,0 +1,43 @@
+{
+  "task": {
+    "Description": "Experiment summarised in the row.",
+    "Levels": {
+      "facedetection": "Face detection task.",
+      "movingwindow": "Moving-window task."
+    }
+  },
+  "n": {
+    "Description": "Number of participants."
+  },
+  "age_mean": {
+    "Description": "Mean age at testing, one decimal.",
+    "Units": "years"
+  },
+  "age_sd": {
+    "Description": "Standard deviation of age at testing (n - 1 in the denominator), one decimal.",
+    "Units": "years"
+  },
+  "age_min": {
+    "Description": "Youngest age at testing.",
+    "Units": "years"
+  },
+  "age_max": {
+    "Description": "Oldest age at testing.",
+    "Units": "years"
+  },
+  "female": {
+    "Description": "Number of participants reporting female sex."
+  },
+  "male": {
+    "Description": "Number of participants reporting male sex."
+  },
+  "right_handed": {
+    "Description": "Number of participants reporting right-handedness."
+  },
+  "left_handed": {
+    "Description": "Number of participants reporting left-handedness."
+  },
+  "corrective_lenses": {
+    "Description": "Number of participants answering yes to \"Any form of corrective lenses?\" (glasses or contact lenses)."
+  }
+}

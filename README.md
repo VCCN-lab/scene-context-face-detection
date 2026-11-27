@@ -61,8 +61,8 @@ The released dataset is never modified. Scripts write their results to
 `derivatives/`, and readers of the cached permutation results
 (`run_statistics_tables.py`, the notebooks) take a rerun's from there when it
 exists and the released ones from `data/derivatives/encoding/` otherwise.
-Without `--force`, `run_encoding_analyses.py` reports the cached results
-instead of recomputing them. `uv run pytest` compares every rerun result in
+Without `--force`, `run_encoding_analyses.py` reports the cached results;
+with it, they are recomputed. `uv run pytest` compares every rerun result in
 `derivatives/` with its released counterpart.
 
 Then open the notebooks (`uv run jupyter lab`).
@@ -269,6 +269,9 @@ Participants are pseudonymised. The raw folders were named with initials and a
 number; the mapping to `sub-001` … `sub-076` is deliberately not included.
 `sub-001`–`sub-038` did the face detection task and `sub-039`–`sub-076` the
 moving-window task.
+`data/participants.tsv` lists each participant's ID and task; age, sex,
+handedness and corrective lenses are released per task only, in
+`data/participants_summary.tsv`, written by `export_bids.py`.
 
 ## Licence
 
