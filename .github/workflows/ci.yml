@@ -35,5 +35,7 @@ jobs:
           version: "0.10.9"
           enable-cache: true
           python-version: ${{ matrix.python-version }}
+      - name: Released dataset (downloaded from Zenodo into data/)
+        run: uv run --frozen python code/fetch_data.py
       - name: Tests (pytest; the network test marked zenodo is deselected)
         run: uv run --frozen pytest

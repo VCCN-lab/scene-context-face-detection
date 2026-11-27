@@ -28,9 +28,11 @@ FIGURES = ROOT / "figures"
 
 # The published Zenodo record that download.fetch() unpacks into <repo>/data:
 # the archive's URL (a "doi:<DOI>/<file name>" URL resolves through Zenodo) and
-# its checksum ("md5:<hex digest>"). None until the record is published.
-ZENODO_URL = None
-ZENODO_HASH = None
+# its checksum ("md5:<hex digest>"). Record 24581856, DOI
+# 10.5281/zenodo.24581856.
+ZENODO_URL = ("doi:10.5281/zenodo.24581856/"
+              "scene-context-face-detection_data.zip")
+ZENODO_HASH = "md5:937db6f707ec8f6e905513871ee77678"
 
 TASKS = ("facedetection", "movingwindow")
 TASK_LABEL = {"facedetection": "Face detection task",

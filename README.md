@@ -12,8 +12,9 @@ features and CNN activations computed from them are in
 `data/derivatives/stimulus_features/`, and the face masks are in
 `data/stimuli/masks/`.
 
-The dataset (`data/`, with its derivatives) is published on Zenodo and is
-downloaded into `data/` by `code/fetch_data.py`. To use a copy elsewhere, set
+The dataset (`data/`, with its derivatives) is published on Zenodo
+(https://doi.org/10.5281/zenodo.24581856) and is downloaded into `data/` by
+`code/fetch_data.py`. To use a copy elsewhere, set
 `FACESCENES_DATA` to its path.
 
 ```
@@ -73,6 +74,9 @@ source data cannot disagree. Panels carry no titles, as the journal requires;
 set `SHOW_TITLES = True` in `facescenes/plotting.py` to label them by task.
 
 ## Tests
+
+The tests read the released dataset, so download it first
+(`uv run python code/fetch_data.py`).
 
 ```bash
 uv run pytest                   # about 1.5 minutes

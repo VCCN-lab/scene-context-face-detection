@@ -1,5 +1,0 @@
-# Study-level files without BIDS entities, each documented by its JSON
-# sidecar.
-encoding_*
-feature_correlations.*
-masking_anova.*
