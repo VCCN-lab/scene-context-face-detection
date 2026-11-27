@@ -30,8 +30,8 @@ def fetch(url=None, known_hash=None, dest=None, cache=None):
     dest = cfg.ROOT if dest is None else Path(dest)
     if url is None:
         raise RuntimeError("no published Zenodo record is configured "
-                           "(config.ZENODO_URL); set FACESCENES_DATA to a "
-                           "local copy of the dataset instead")
+                           "(config.ZENODO_URL); to use a local copy of the "
+                           "dataset, set FACESCENES_DATA to its path")
     data = dest / "data"
     if data.exists() and any(data.iterdir()):
         warnings.warn(f"{data} already holds files and is left unchanged; "

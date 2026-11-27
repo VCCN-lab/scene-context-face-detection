@@ -43,7 +43,7 @@ spec=(
 uvx "$NEURODOCKER" generate docker "${spec[@]}" > Dockerfile
 
 # apptainer build binds the host /tmp into %post, so every build step of the
-# Apptainer image writes its temporaries to a folder inside the image instead.
+# Apptainer image writes its temporaries to a folder inside the image.
 uvx "$NEURODOCKER" generate singularity "${spec[@]}" | awk -v tmp="$BUILD_TMP" '
   /^%post$/      { print; print "mkdir -p " tmp; print "export TMPDIR=" tmp; next }
   /^%runscript$/ { print "rm -rf " tmp; print ""; print; next }

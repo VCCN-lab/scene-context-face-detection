@@ -10,7 +10,7 @@
     "Description": "Preview condition.",
     "Levels": {
       "preview": "The scene was previewed before the search display.",
-      "no_preview": "A grey placeholder was shown instead of the preview."
+      "no_preview": "A grey placeholder was shown before the search display."
     }
   },
   "face": {

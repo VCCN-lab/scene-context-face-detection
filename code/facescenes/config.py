@@ -17,7 +17,7 @@ def data_root(environ=os.environ):
 
 
 # The released dataset is read only. Its derivatives are nested in it, as BIDS
-# derivative datasets. Scripts write their results to OUTPUT instead, and
+# derivative datasets. Scripts write their results to OUTPUT, and
 # readers of cached results prefer a result in OUTPUT over the released one
 # (data.results_path).
 DATA = data_root()
