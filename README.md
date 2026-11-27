@@ -1,40 +1,47 @@
 # Scene previews and face detection
 
-Data and analysis code for two gaze-contingent eye-tracking experiments asking
-how a brief preview of a scene changes how quickly observers find a face in it.
+Analysis code for two gaze-contingent eye-tracking experiments on how a brief
+preview of a scene changes how quickly observers find a face in it. The code
+reproduces every reported number and figure from the published dataset.
 
-Everything needed to reproduce every reported number and figure is in this
-folder. The scene photographs themselves are not included: they are adapted
-from the Places365 dataset, whose image copyright stays with the original
-owners, and are available from the OSF project
-(https://doi.org/10.17605/OSF.IO/5AYX8). No analysis reads them; the image
-features and CNN activations computed from them are in
-`data/derivatives/stimulus_features/`, and the face masks are in
-`data/stimuli/masks/`.
+Dataset: https://doi.org/10.5281/zenodo.24581856
 
-The dataset (`data/`, with its derivatives) is published on Zenodo
-(https://doi.org/10.5281/zenodo.24581856) and is downloaded into `data/` by
-`code/fetch_data.py`. To use a copy elsewhere, set
+## Data
+
+The dataset is published on Zenodo: fixation-level event tables, participants
+and face masks as a BIDS dataset, with the image features and CNN activations,
+the encoding-model results, the Supplementary Tables and the figure source data
+as BIDS derivatives. `code/fetch_data.py` downloads it into `data/`; its
+`README.md` describes the layout. To use a copy stored elsewhere, set
 `FACESCENES_DATA` to its path.
 
+The scene photographs are not part of the dataset. They are adapted from the
+Places365 dataset, whose image copyright stays with the original owners. No
+analysis reads them; the image features and CNN activations computed from them
+are in `data/derivatives/stimulus_features/`, and the face masks are in
+`data/stimuli/masks/`.
+
+## Repository contents
+
 ```
-data/            BIDS dataset: fixation-level events, participants, face masks
-  derivatives/   BIDS derivative datasets, as released:
-    stimulus_features/   the ten image predictors and the CNN activations
-    encoding/            cached permutation results
-    tables/              the Supplementary Tables as TSV
-    source_data/         the numbers plotted in every figure panel, one TSV each
-derivatives/     results of a rerun, same layout (not tracked by git)
 code/
-  facescenes/    the analysis package
-  run_*.py       one script per analysis, each runnable on its own
-  fetch_data.py  downloads and unpacks the dataset into data/
-  export_bids.py how the raw recordings were reduced to data/
+  facescenes/          the analysis package
+  run_*.py             one script per analysis, each runnable on its own
+  fetch_data.py        downloads the dataset from Zenodo into data/
+  export_bids.py       how the raw recordings were reduced to the dataset
   build_notebooks.py   regenerates the notebooks
-tests/           unit tests and consistency checks (pytest)
-notebooks/       one notebook per figure
-figures/         every panel as PNG (300 dpi, RGB) and as vector PDF
+notebooks/             one notebook per figure
+figures/               every panel as PNG (300 dpi, RGB) and as vector PDF
+tests/                 unit tests and consistency checks (pytest)
+generate_images.sh     writes Dockerfile and Singularity.def
 ```
+
+Two folders are created locally and are not part of the repository:
+
+* `data/`: the dataset, as downloaded from Zenodo.
+* `derivatives/`: the results of rerunning an analysis, in the layout of
+  `data/derivatives/`. The released results in `data/derivatives/` are not
+  modified.
 
 ## Quick start
 
@@ -44,15 +51,15 @@ every package version.
 ```bash
 uv sync
 cd code
-uv run python fetch_data.py                     # once; skipped if data/ holds files
-uv run python run_behavioural_analyses.py       # seconds
-uv run python run_onset_gaze_control.py         # seconds
-uv run python run_reliability.py                # ~1 minute
-uv run python run_encoding_analyses.py --force  # ~1 hour at 5000 permutations
-uv run python run_contrast_test.py              # ~15 minutes
-uv run python run_masked_face_analyses.py       # seconds
-uv run python run_layer_depth.py                # ~1 minute
-uv run python run_statistics_tables.py          # ~15 minutes; reads the two caches above
+uv run python fetch_data.py
+uv run python run_behavioural_analyses.py
+uv run python run_onset_gaze_control.py
+uv run python run_reliability.py
+uv run python run_encoding_analyses.py --force
+uv run python run_contrast_test.py
+uv run python run_masked_face_analyses.py
+uv run python run_layer_depth.py
+uv run python run_statistics_tables.py
 ```
 
 Without uv, `pip install -r requirements.txt` installs the same pinned
@@ -79,7 +86,7 @@ The tests read the released dataset, so download it first
 (`uv run python code/fetch_data.py`).
 
 ```bash
-uv run pytest                   # about 1.5 minutes
+uv run pytest
 uv run pytest -m zenodo         # downloads the published dataset
 uv run codespell                # spelling, configured in .codespellrc
 uv run flake8                   # PEP8, configured in .flake8
@@ -89,16 +96,16 @@ The same checks run on GitHub for every pull request
 (`.github/workflows/ci.yml`), the tests on Python 3.10 and 3.12.
 
 `test_stats.py`, `test_encoding.py` and `test_behaviour.py` are unit tests on
-synthetic data with known answers: permutation p-values, the paired and
-one-sample tests, split-half reliability, the 2 x 2 ANOVA (every F must equal the
-squared t of the matching contrast), the cross-validation splits (every image
-held out equally often), the scoring and models, the trial reduction and the
-figure helpers. `test_release.py` checks the released files against the code
-and against each other: that the dataset meets the assumptions the code makes,
-that the cached predictivity is reproduced from the current data, that the
-hard-coded reliabilities match a fresh estimate, that the Supplementary Tables
-and the figures' source data agree with the caches, and that the headline
-statistics of the paper come out unchanged.
+synthetic data: permutation p-values, the paired and one-sample tests,
+split-half reliability, the 2 x 2 ANOVA (every F must equal the squared t of the
+matching contrast), the cross-validation splits (every image held out equally
+often), the scoring and models, the trial reduction and the figure helpers.
+`test_release.py` checks the released files against the code and against each
+other: that the dataset meets the assumptions the code makes, that the cached
+predictivity is reproduced from the current data, that the hard-coded
+reliabilities match a fresh estimate, that the Supplementary Tables and the
+figures' source data agree with the caches, and that the main statistics
+reported in the paper are reproduced from the data.
 
 ## Containers
 
@@ -217,7 +224,9 @@ any monotone transform of a predictor.
 
 ## Exclusions
 
-All in `facescenes/config.py`, with the reason next to each.
+The exclusions are defined in `code/facescenes/config.py`
+(`EXCLUDE_PARTICIPANTS`, `EXCLUDE_STIMULI`), each with a comment giving its
+reason. No participants are excluded.
 
 **Stimuli, face detection task only.** Ten Conferanceroom scenes: a
 filename-spelling mismatch at collection time meant the experiment's pairing
