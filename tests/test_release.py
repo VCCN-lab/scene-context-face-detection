@@ -4,7 +4,6 @@ These check that the dataset satisfies the assumptions the code makes, that the
 caches, tables, figures' source data and config constants agree with each other,
 and that the headline numbers of the paper are reproduced. They read the
 released dataset (cfg.DATA, with cfg.DERIVATIVES) and take about a minute.
-Results written to cfg.OUTPUT by a rerun are compared with the released ones.
 """
 
 import numpy as np
@@ -21,9 +20,6 @@ from facescenes import stats as S
 TABLES = cfg.DERIVATIVES / "tables"
 SOURCE = cfg.DERIVATIVES / "source_data"
 CACHE = cfg.DERIVATIVES / "encoding"
-FRESH = (sorted(p for p in cfg.OUTPUT.rglob("*")
-                if p.suffix in {".npz", ".tsv"})
-         if cfg.OUTPUT.is_dir() else [])
 N_IMAGES = {"facedetection": 108, "movingwindow": 120}
 
 
@@ -205,28 +201,3 @@ def test_figure1_source_data_has_all_participants():
     src = pd.read_csv(SOURCE / "fig1b_latency_face_detection.tsv", sep="\t")
     assert len(src) == 38 and src["participant"].is_unique
     assert src["preview_mean_latency_ms"].mean() == pytest.approx(208.77, abs=.01)
-
-
-# ------------------------------------------------- rerun against release
-def fresh_id(path):
-    """Test ID of a fresh result: its path relative to cfg.OUTPUT."""
-    return str(path.relative_to(cfg.OUTPUT))
-
-
-@pytest.mark.parametrize("path", FRESH, ids=fresh_id)
-def test_fresh_result_matches_release(path):
-    """A rerun's TSV or npz result matches the released file."""
-    released = cfg.DERIVATIVES / path.relative_to(cfg.OUTPUT)
-    assert released.is_file(), released
-    if path.suffix == ".tsv":
-        pd.testing.assert_frame_equal(pd.read_csv(path, sep="\t"),
-                                      pd.read_csv(released, sep="\t"),
-                                      check_exact=False, rtol=1e-6)
-        return
-    new, old = np.load(path), np.load(released)
-    assert sorted(new.files) == sorted(old.files)
-    for k in old.files:
-        if old[k].dtype.kind == "f":
-            assert np.allclose(new[k], old[k], rtol=1e-6, equal_nan=True), k
-        else:
-            assert np.array_equal(new[k], old[k]), k

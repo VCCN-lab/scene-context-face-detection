@@ -70,8 +70,7 @@ The released dataset is never modified. Scripts write their results to
 (`run_statistics_tables.py`, the notebooks) take a rerun's from there when it
 exists and the released ones from `data/derivatives/encoding/` otherwise.
 Without `--force`, `run_encoding_analyses.py` reports the cached results;
-with it, they are recomputed. `uv run pytest` compares every rerun result in
-`derivatives/` with its released counterpart.
+with it, they are recomputed.
 
 Then open the notebooks (`uv run jupyter lab`).
 
