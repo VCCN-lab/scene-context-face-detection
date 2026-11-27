@@ -23,7 +23,9 @@ What it does
   number, which are potentially identifying. They become sub-001, sub-002, ...
   in the order of the sorted raw folder names. The mapping is deliberately NOT
   written to the release.
-* Collects age, sex, handedness and corrected-vision into participants.tsv.
+* Writes participants.tsv with participant ID and task only. Age, sex,
+  handedness and corrected vision are released as per-task aggregates in
+  participants_summary.tsv.
 
 Condition labelling
 -------------------
@@ -69,13 +71,23 @@ SKIP = re.compile(r"pilot|test|^999", re.I)
 # BEFORE IDs are assigned, so the released IDs run without gaps.
 NOT_IN_SAMPLE = {"facedetection": set(), "movingwindow": {12, 40}}
 
+# Demographic codes in the raw files and the summary column counting each.
+SUMMARY_COUNTS = {"female": ("sex", "f"), "male": ("sex", "m"),
+                  "right_handed": ("handedness", "r"),
+                  "left_handed": ("handedness", "l"),
+                  "corrective_lenses": ("corrected_vision", "yes")}
+KNOWN_CODES = {"sex": {"f", "m", "n/a"}, "handedness": {"r", "l", "n/a"},
+               "corrected_vision": {"yes", "no", "n/a"}}
+
 
 def scalar(x):
+    """First element of a MATLAB value as a float; None if it is empty."""
     a = np.asarray(x).ravel()
     return float(a[0]) if a.size else None
 
 
 def text(x):
+    """First element of a MATLAB value as a string; "" if it is empty."""
     a = np.asarray(x).ravel()
     return str(a[0]) if a.size else ""
 
@@ -109,6 +121,8 @@ def fixations(cell, endtimes):
 
 
 def export_task(task, cfg, sub_offset, raw_root):
+    """Write the event tables of one task; return its participant records
+    (ID, task and demographics) and the number of sessions exported."""
     raw = raw_root / cfg["raw"]
     stims = sorted(p.name for p in (raw / "Part_1").iterdir() if "with_face" in p.name)
     subs = [d for d in sorted((raw / "results").iterdir())
@@ -167,7 +181,42 @@ def export_task(task, cfg, sub_offset, raw_root):
     return people, len(subs)
 
 
+def participants_table(people):
+    """participants.tsv: the ID and task of every participant, in order."""
+    return pd.DataFrame(people, columns=["participant_id", "task"])
+
+
+def check_codes(table):
+    """Raise if a demographic column holds a code the summary cannot count."""
+    for column, known in KNOWN_CODES.items():
+        unknown = set(table[column]) - known
+        if unknown:
+            raise ValueError(f"unexpected {column} codes: {sorted(unknown)}")
+
+
+def task_summary(task, group):
+    """Summary row of one task: N, age statistics and the code counts."""
+    age = group["age"].dropna()
+    row = dict(task=task, n=len(group), age_mean=round(age.mean(), 1),
+               age_sd=round(age.std(), 1), age_min=age.min(),
+               age_max=age.max())
+    row.update({name: int((group[column] == code).sum())
+                for name, (column, code) in SUMMARY_COUNTS.items()})
+    return row
+
+
+def demographics_summary(people):
+    """Per-task N, age mean and SD (one decimal), age range, and the counts
+    of SUMMARY_COUNTS. Ages of "n/a" are left out of the age statistics."""
+    table = pd.DataFrame(people)
+    check_codes(table)
+    table["age"] = pd.to_numeric(table["age"].where(table["age"] != "n/a"))
+    return pd.DataFrame([task_summary(task, group)
+                         for task, group in table.groupby("task")])
+
+
 def main():
+    """Export both tasks, participants.tsv and participants_summary.tsv."""
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("raw_root", type=Path,
                     help="directory holding the raw session trees "
@@ -181,7 +230,10 @@ def main():
         p, n = export_task(task, cfg, off, args.raw_root)
         people += p
         off += n
-    pd.DataFrame(people).to_csv(OUT / "participants.tsv", sep="\t", index=False)
+    participants_table(people).to_csv(OUT / "participants.tsv", sep="\t",
+                                      index=False)
+    demographics_summary(people).to_csv(OUT / "participants_summary.tsv",
+                                        sep="\t", index=False, na_rep="n/a")
     print(f"\nwrote {len(people)} participants to {OUT/'participants.tsv'}")
 
 
