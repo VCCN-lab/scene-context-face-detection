@@ -107,14 +107,13 @@ notebooks and the Python packages locked in `uv.lock`, on
 `python:3.12-slim-bookworm`. Both are generated from one specification by
 `bash generate_images.sh`, which runs
 [Neurodocker](https://github.com/ReproNim/neurodocker) through uvx; edit the
-script, not the recipes. The dataset is not part of either image. The
-Docker image is published to `ghcr.io/vccn-lab/scene-context-face-detection`
-for the main branch and for version tags (`.github/workflows/container.yml`).
+script, not the recipes. The dataset is not part of either image. No
+pre-built images are published; build them from the definitions:
 
 ```bash
-# Docker: JupyterLab on port 8888, with a local copy of the dataset mounted
-docker run -p 8888:8888 -v "$PWD/data":/opt/facescenes/data:ro \
-    ghcr.io/vccn-lab/scene-context-face-detection:main
+# Docker: build, then start JupyterLab on port 8888 with the dataset mounted
+docker build -t facescenes .
+docker run -p 8888:8888 -v "$PWD/data":/opt/facescenes/data:ro facescenes
 
 # Apptainer: the image is read only, so bind a clone of this repository
 # (with data/ in it) over /opt/facescenes to write results
